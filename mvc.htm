@@ -1,0 +1,69 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>MVC</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link href='http://fonts.googleapis.com/css?family=Merriweather:400,900,700' rel='stylesheet' type='text/css'>
+  <!-- <link rel="stylesheet" href="css/styles.css?v=1.0"> -->
+  <style>
+ 	body {
+ 		text-align: center;
+ 		font-size: 62.5%;
+ 		/*background: #42b188;*/
+ 		font-family: 'Merriweather', serif;
+ 	}
+ 	h1 span {
+ 		display: block;
+ 		font-size: .5rem;
+ 	}
+ 	#list {
+ 		width: 95%;
+ 		margin: 20px auto;
+ 		padding: 12px 0;
+ 	}
+ 	#list div {
+ 		cursor: move;
+ 		width: 50%;
+ 		text-align: left;
+ 		margin: 2.5px auto;
+ 		line-height: 60px;
+ 		font-size: 1 rem;
+ 		border: 1px solid #fff;
+ 		background: #4fd1a1;
+ 		/*-webkit-box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.5);
+		-moz-box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.5);
+		box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.5);*/
+ 	}
+ 	#list button {
+ 		margin: 10px 0;
+ 	}
+  </style>
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+	<!-- <h1>To Do List <span>knock 'em out</span></h1> -->
+   
+	<form id="input">
+		<label for="name">Task:</label>
+		<input type="text" name="add_task_field" autofocus required >
+		<button type="submit">Add</button> <!-- // -->
+	
+		<div id="list">
+			
+		</div>
+			<button id="alphabetize" name="alphabetize">Alphabetize</button> <button id="removeBtn" name="remove">Remove Checked Tasks</button> <!-- // -->
+	</form>
+
+
+	<span>Export: </span><button>PDF</button><button>CSV</button><button>doc</button> <!-- // --> 
+
+	<script src="script.js"></script>
+</body>
+</html>
