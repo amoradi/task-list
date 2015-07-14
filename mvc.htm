@@ -11,59 +11,145 @@
   <!-- <link rel="stylesheet" href="css/styles.css?v=1.0"> -->
   <style>
  	body {
- 		text-align: center;
+ 		text-align: left;
  		font-size: 62.5%;
  		/*background: #42b188;*/
+ 		background: #fcf6df;
  		font-family: 'Merriweather', serif;
+ 		padding: .5% 2%;
  	}
- 	h1 span {
- 		display: block;
- 		font-size: .5rem;
+ 	h1 {
+ 		margin-bottom: 40px;
+ 	}
+ 	#input {
+ 		max-width: 960px;
+  		margin: 0 auto;
  	}
  	#list {
- 		width: 95%;
- 		margin: 20px auto;
- 		padding: 12px 0;
+ 		width: 90%;
+ 		margin: 20px 0;
+ 		overflow: hidden;
  	}
  	#list div {
- 		cursor: move;
- 		width: 50%;
+ 		cursor: pointer;
+ 		overflow-y: auto;
  		text-align: left;
- 		margin: 2.5px auto;
- 		line-height: 60px;
- 		font-size: 1 rem;
- 		border: 1px solid #fff;
- 		background: #4fd1a1;
+ 		margin: 3px 0;
+ 		line-height: 30px;
+  		padding: 5px 140px 5px 20px;
+ 		font-size: 1.4rem;
+ 		color: #fff;
+ 		position: relative;
+ 		/*border: 1px solid #fff;*/
+ 		background: #df4b48; /*#4fd1a1*/
  		/*-webkit-box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.5);
 		-moz-box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.5);
 		box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.5);*/
  	}
- 	#list button {
- 		margin: 10px 0;
+ 	#list > div:hover, button:hover {
+ 		opacity: .9;
+ 		filter: alpha(opacity=90);
  	}
+ 	#list [type=checkbox] {
+ 		margin: 0 15px 0 0;
+ 		height: 40px;
+		width: 30px;
+		display: inline-block;
+		vertical-align: middle;
+		opacity: .3;
+		filter: alpha(opacity=30);
+ 	}
+ 	#list label {
+ 		cursor: pointer;
+ 		word-wrap: break-word;
+ 	}
+ 	#list .completed {
+ 		background: #4fd1a1;
+ 		text-decoration: line-through;
+ 	}
+ 	
+ 	#list .in-progress {
+ 		background: #699DB1; /*F3924F;*/
+ 	}
+ 	#list .completed:after, #list .in-progress:after, #list div:after {
+ 		content: "completed";
+		color: #fff;
+		display: block;
+		position: absolute;
+		right: 15px;
+		bottom: 15%;
+		font-size: 14px;
+		background-color: rgba(255,255,255,.2);
+		padding: 2px 10px;
+		width: 100px;
+		text-align: center;
+ 	}
+ 	#list div:after {
+ 		content: "incomplete";
+ 	}
+ 	#list .in-progress:after {
+ 		content: "in progress";
+ 	}
+ 	button {
+ 		cursor: pointer;
+		background: #999;
+		border: none;
+		padding: 0px 30px;
+		line-height: 35px;
+		color: #fff;
+		margin: 0 10px 0 0;
+		font-family: 'Merriweather', serif;
+		font-size: 16px;
+ 	}
+ 	#list ~ button {
+ 		margin-bottom: 10px;
+ 	}
+ 	button:focus {
+ 		outline: none;
+ 	}
+ 	[name=add_task_field] {
+ 		margin-right: 6px;
+ 		line-height: 35px;
+ 		border: none;
+		width: 30%;
+		padding: 0 10px;
+		font-family: 'Merriweather', serif;
+ 	}
+ 	[name=add_task_field]:focus {
+ 		border: none;
+  		outline: none;
+  	}
+  	.csvTextarea {
+		display: block;
+		padding: 15px 20px;
+		margin-top: 10px;
+		font-size: 14px;
+		overflow: hidden;
+		width: 90%;
+		min-height: 200px;
+		box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		border: none;
+		outline: none;
+		resize: vertical;
+  	}
   </style>
   <!--[if lt IE 9]>
   <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
 </head>
 
-<body>
-	<!-- <h1>To Do List <span>knock 'em out</span></h1> -->
-   
+<body>   
 	<form id="input">
-		<label for="name">Task:</label>
+		<h1>&#x02713;&nbsp;&nbsp;TaskMaster</h1>
 		<input type="text" name="add_task_field" autofocus required >
-		<button type="submit">Add</button> <!-- // -->
+		<button type="submit">Add Task</button> <!-- // -->
 	
 		<div id="list">
 			
 		</div>
-			<button id="alphabetize" name="alphabetize">Alphabetize</button> <button id="removeBtn" name="remove">Remove Checked Tasks</button> <!-- // -->
+			<button id="csv">Format to CSV</button> <button id="alphabetize" name="alphabetize">Alphabetize</button> <button id="removeBtn" name="remove">Remove Completed Tasks</button> <!-- // -->
 	</form>
-
-
-	<span>Export: </span><button>PDF</button><button>CSV</button><button>doc</button> <!-- // --> 
-
 	<script src="script.js"></script>
 </body>
 </html>

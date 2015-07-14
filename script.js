@@ -7,38 +7,42 @@ function addEventHandler(elem,eventType,handler) {
  else if (elem.attachEvent)
      elem.attachEvent('on'+eventType,handler); 
 }
+Element.prototype.remove = function() {
+    this.parentElement.removeChild(this);
+}
 
-
-/* 
-  Model ========================
-		- Add task
-		- Remove task
-		- (one object)
-		- Add checked flag
-		- Uncheck flag 
-		- write to */
+// Model
 var Model = function() {
 	
-	// collection of task objects 
-	// name = {
-	// 		checked: boolean
-	// }
-	var _model = {};
+	var _model 	= {},
+		counter = 0;
+
+	function _resetModel() {
+		counter = 0;
+		for (var member in _model) {
+			_removeTask(member);
+		}
+	}
 
 	function _addTask(obj) {
-		_model[obj['name']] = obj;
+		counter += 1;
+		_model[counter] = obj;
 	}
 
-	function _removeTask(task_name) {
-		delete _model[task_name]; 
+	function _removeTask(task_num) {
+		delete _model[task_num]; 
 	}
 
-	function _checkTask(task_name) {
-		_model[task_name].checked = true;
+	function _checkTask(task_num) {
+		_model[task_num].status = 'completed';
 	}
 
-	function _uncheckTask(task_name) {
-		_model[task_name].checked = false;
+	function _inProgressTask(task_num) {
+		_model[task_num].status = 'in progress';
+	}
+
+	function _uncheckTask(task_num) {
+		_model[task_num].status = 'incomplete';
 	}
 
 	function _alphabetize() {
@@ -46,8 +50,18 @@ var Model = function() {
 		keys.sort();
 	}
 
-	function write() {
+	function _writeCSV() {
+		var csvArray = [],
+			csvContent;
 
+		for (var key in _model) {
+			if(_model.hasOwnProperty(key)) {
+				var obj = _model[key]['name'] + ',' + _model[key]['status'];
+				csvArray.push(obj);
+			}
+		}
+		csvContent = csvArray.join("\n");
+		return csvContent;
 	}
 
 	function _getTaskCnt() {
@@ -59,27 +73,34 @@ var Model = function() {
 		addTask: _addTask,
 		removeTask: _removeTask,
 		checkTask: _checkTask,
+		inProgressTask: _inProgressTask,
 		uncheckTask: _uncheckTask,
 		getTaskCnt: _getTaskCnt,
+		resetModel: _resetModel,
+		writeCSV: _writeCSV,
 		model: _model
 	}
 }();
 
-function Task(name) { // Task constructor
+function Task(name, status) { // Task constructor
 	return {
 		'name': name,
-		'checked': false
+		'status': (status) ? status : 'incomplete'
 	};
 }
 
 // Controller
 var Controller = {
-	watch: function(form, removeBtn, alphabetize) {
+	counter: 0,
+	watch: function(form, removeBtn, alphabetize, csv) {
 	   
 		// add task
 		addEventHandler(form, 'submit', function(evt) {
 			evt.preventDefault(); // prevent the form from being submitted
-      		this.add(form.add_task_field.value); // add to Model and View
+      		this.counter += 1;
+      		this.add(form.add_task_field.value, this.counter); // add to Model and View
+      		form.add_task_field.value = "";
+      		form.add_task_field.focus();
 		}.bind(this), false);
 
 		// remove task
@@ -89,38 +110,36 @@ var Controller = {
 		}.bind(this), false);
 
 		// alphabetize
-		addEventHandler(alphabetize, 'click', function() {
+		addEventHandler(alphabetize, 'click', function(evt) {
+			evt.preventDefault();
 			this.alphabetize();
-		});
+		}.bind(this), false);
 
 		// write
-		addEventHandler(form, 'submit', function() {
-
-		});
+		addEventHandler(csv, 'click', function(evt) {
+			evt.preventDefault();
+			this.writeCSV();
+		}.bind(this), false);
 	},
 
-	add: function(name) {
-		var taskObj = new Task(name);
+	add: function(name, num) {
+		var taskObj = new Task( (Array.isArray(name)) ? name[0], name[1] : name );
 
-		if (Model.model.hasOwnProperty(taskObj[name])) {
-			alert('duplicate');
-			taskObj[name] += $;
-		}
 		Model.addTask(taskObj);
-		View.renderAddition(name);
+		View.renderAddition(name, num);
 	},
 	remove: function() {
 		// for each key in model, if has checked value true, delete from object
-		var checkedB = document.querySelectorAll('[type=checkbox]');
+		var checkedB = document.querySelectorAll('#list [type=checkbox]');
 		for (var i = 0, ii = checkedB.length; i < ii; i++) {
 			if (checkedB[i].checked) {
-				Model.removeTask(checkedB[i].name); // Model
+				Model.removeTask(checkedB[i].getAttribute('data-count')); // Model
 
 				var parent = checkedB[i].parentNode; // View
 				while (parent.firstChild) {
 				    parent.removeChild(parent.firstChild);
 				}
-
+				parent.remove();
 			}
 		}			
 	},
@@ -128,37 +147,74 @@ var Controller = {
 		var chbxClicked = evt.target.tagName === "INPUT";
 
 		if (chbxClicked) {
-			var taskObj = evt.target.name,
+			var taskObj = evt.target.getAttribute('data-count'),
 			    checked = evt.target.checked,
 			    chbx  	= evt.target;
 		}
 		else if (evt.target.tagName === "DIV") {
-			var taskObj = evt.target.firstElementChild.name,
-			    checked = evt.target.firstElementChild.checked,
-			    chbx  	= evt.target.firstElementChild;
+			var taskObj 	= evt.target.firstElementChild.getAttribute('data-count'),
+			    checked 	= evt.target.firstElementChild.checked,
+			    chbx  		= evt.target.firstElementChild,
+			    inProgress 	= (evt.target.getAttribute("class") === 'in-progress') ? true : false;
+		}
+		else if (evt.target.tagName === "LABEL") {
+			var taskObj 	= evt.target.previousElementSibling.getAttribute('data-count'),
+			    checked 	= evt.target.previousElementSibling.checked,
+			    chbx  		= evt.target.previousElementSibling,
+			    inProgress 	= (evt.target.parentElement.getAttribute("class") === 'in-progress') ? true : false;
 		}
 
-		   
+		// uncheck chbx || click div when chbx was checked   
 		if ( (!checked && chbxClicked) || (checked && !chbxClicked) ) {
 			Model.uncheckTask(taskObj);
-			View.unLineThrough(chbx);
+			View.incompleted(chbx);
+		}
+		else if (!chbxClicked && !checked && !inProgress) {
+			Model.inProgressTask(taskObj);
+			View.inprogress(chbx);
 		}
 		else {
 			Model.checkTask(taskObj);
-			View.lineThrough(chbx);
+			View.completed(chbx);
 		}	
 	},
 	alphabetize: function() {
-		keys = Module.keys(myObj)
-	},
-	write: function() {
+		// remove from Model
+		Model.resetModel();
+		
+		var list 	= document.getElementById("list");
+		// get all input.names in #list
+		    tasks   = document.querySelectorAll('#list [type=checkbox]');
+		    if (tasks) {
+		    	var nameArray = [];
+		    	
+		    	for (i =0, ii =tasks.length; i < ii; i++) {
 
+		    		nameArray.push([tasks[i].name, tasks[i].parentElement.getAttribute('class')]);
+
+		    	}
+		    	
+		    	nameArray.sort();
+		    	console.log(nameArray);
+		    }
+
+		//  remove from View
+		while (list.firstChild) {
+		   list.removeChild(list.firstChild);
+		}
+		// for each one renderAddition(name, i)
+		for (i=0, ii =nameArray.length; i < ii; i++) {
+			this.add(nameArray[i], i+1);
+		}
+	},
+	writeCSV: function() {
+		View.writeCSV(Model.writeCSV());
 	}
 };
 
 // View
 var View = {
-	renderAddition: function(name) {
+	renderAddition: function(name, num) {
 		console.log('render');
 	    var list 				= document.getElementById("list"),
 	    	dv   				= document.createElement("div"),
@@ -166,7 +222,8 @@ var View = {
 			label 				= document.createElement('label');
 	
 			chbx.type 			= "checkbox";
-			chbx.name 			= name;
+			chbx.name 			= (Array.isArray(name)) ? name[0] : name;
+			chbx.setAttribute('data-count', num);
 			label.textContent 	= name;
 			dv.appendChild(chbx);
 			dv.appendChild(label);
@@ -186,14 +243,32 @@ var View = {
 	render: function() {
 
 	},
-	lineThrough: function(chbx) {
+	completed: function(chbx) {
 		chbx.checked = true;
-		chbx.nextSibling.style.textDecoration = "line-through";
+		chbx.parentElement.removeAttribute("class");
+		chbx.parentElement.setAttribute("class", "completed");
 	},
-	unLineThrough: function(chbx) {
+	inprogress: function(chbx) {
 		chbx.checked = false;
-		chbx.nextSibling.style.textDecoration = "none";	
+		chbx.parentElement.removeAttribute("class");
+		chbx.parentElement.setAttribute("class", "in-progress");
+	},
+	incompleted: function(chbx) {
+		chbx.checked = false;
+		chbx.parentElement.removeAttribute("class");
+	},
+	writeCSV: function(csvString) {
+
+		var form 		= document.getElementById('input'),
+			textarea 	= document.createElement("textarea"),
+			oldField    = document.getElementsByClassName('csvTextarea'),
+			isOld       = (oldField.length > 0 ) ? true : false;
+
+			if (isOld) oldField[0].remove(); // remove current textarea
+			textarea.textContent = csvString;
+			textarea.setAttribute('class', 'csvTextarea');
+		form.appendChild(textarea);
 	}
 }
 
-Controller.watch(document.getElementById('input'), document.getElementById('removeBtn'), document.getElementById('alphabetize'));
+Controller.watch(document.getElementById('input'), document.getElementById('removeBtn'), document.getElementById('alphabetize'), document.getElementById('csv'));
