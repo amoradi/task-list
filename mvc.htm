@@ -10,15 +10,18 @@
   <link href='http://fonts.googleapis.com/css?family=Merriweather:400,900,700' rel='stylesheet' type='text/css'>
   <!-- <link rel="stylesheet" href="css/styles.css?v=1.0"> -->
   <style>
+  	html {
+       overflow-y: scroll;
+	}
  	body {
  		text-align: left;
  		font-size: 62.5%;
  		/*background: #42b188;*/
  		background: #ECE9DF; /*#fcf6df;*/
  		font-family: 'Merriweather', serif;
- 		padding: .5% 2%;
+ 		padding: 0;
  		margin: 0;
- 		border-top: 4px solid #111;
+ 		/*border-top: 4px solid #111;*/
  	}
  	h1 {
  		margin-bottom: 60px;
@@ -35,11 +38,12 @@
 		border-radius: 3px;
  	}
  	#input {
- 		max-width: 960px;
-  		margin: 0 auto;
+ 		width: 80%;
+  		margin: 0 0 0 20px;
+  		float: left;
  	}
  	#list {
- 		width: 90%;
+ 		width: 100%;
  		margin: 20px 0;
  		overflow: hidden;
  	}
@@ -58,10 +62,6 @@
  		/*-webkit-box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.5);
 		-moz-box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.5);
 		box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.5);*/
- 	}
- 	#list > div:hover, button:hover {
- 		opacity: .9;
- 		filter: alpha(opacity=90);
  	}
  	#list [type=checkbox] {
  		margin: 0 15px 0 0;
@@ -107,21 +107,39 @@
  		cursor: pointer;
 		background: #999;
 		border: none;
-		padding: 0px 30px;
+		padding: 0px 20px 0 10px;
 		line-height: 35px;
 		color: #fff;
-		margin: 0 10px 0 0;
+		margin: 0 7px 0 0;
 		font-family: 'Merriweather', serif;
 		font-size: 16px;
+		margin-bottom: 10px;
+		border: outset 2px #999;
+		display: inline-block;
+  		vertical-align: middle;
+  		text-align: left;
  	}
- 	#list ~ button {
+ 	/*#list ~ button {
  		margin-bottom: 10px;
- 	}
+ 	}*/
  	button:focus {
  		outline: none;
  	}
+ 	#list > div:hover, button:hover, button:focus {
+ 		opacity: .9;
+ 		filter: alpha(opacity=90);
+ 	}
+ 	button > span {
+ 		font-size: 28px;
+ 		display: inline-block;
+  		vertical-align: middle;
+  		margin-right: 5px;
+ 	}
  	[name=add_task_field] {
- 		margin-right: 6px;
+ 		display: inline-block;
+ 		vertical-align: middle;
+ 		margin-right: 7px;
+ 		margin-bottom: 10px;
  		line-height: 35px;
  		border: none;
 		width: 30%;
@@ -131,6 +149,14 @@
  	[name=add_task_field]:focus {
  		border: none;
   		outline: none;
+  	}
+  	#addTask {
+  		background: rgb(167, 196, 81);
+  		border: outset 2px rgb(167, 196, 81);
+  	}
+  	.btnGroup {
+  		display: inline-block;
+ 		vertical-align: middle;
   	}
   	.csvTextarea {
 		display: block;
@@ -156,13 +182,22 @@
 	<form id="input">
 		<h1><span class="checkLogo">&#x02713;</span>&nbsp;&nbsp;TaskMaster</h1>
 		<input type="text" name="add_task_field" autofocus required >
-		<button type="submit">Add Task</button> <!-- // -->
+		<div class="btnGroup"><button type="submit" id="addTask"><span>&plus;</span> Add Task</button><button id="removeTask"><span>&minus;</span> Remove Task</button><button id="removeBtn" name="remove"><span>&minus;</span> Remove Completed Tasks</button></div><!-- // -->
 	
 		<div id="list">
 			
 		</div>
-			<button id="csv">Format to CSV</button> <button id="alphabetize" name="alphabetize">Alphabetize</button> <button id="removeBtn" name="remove">Remove Completed Tasks</button> <!-- // -->
+			<button id="csv"><span>&dtrif;</span> Format to CSV</button><button id="alphabetize" name="alphabetize"><span>&Alpha;</span> Alphabetize</button><!-- // -->
 	</form>
+	<div class="sidebar" style="
+    width: 20%;
+    height: 100%;
+    background-color: #E0DDD4;
+    min-height: 200px;
+    position: fixed;
+    z-index: 999;
+    right: 0;
+"></div>
 	<script src="script.js"></script>
 </body>
 </html>

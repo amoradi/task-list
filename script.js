@@ -92,7 +92,7 @@ function Task(name, status) { // Task constructor
 // Controller
 var Controller = {
 	counter: 0,
-	watch: function(form, removeBtn, alphabetize, csv) {
+	watch: function(form, removeTask, removeBtn, alphabetize, csv) {
 	   
 		// add task
 		addEventHandler(form, 'submit', function(evt) {
@@ -103,10 +103,16 @@ var Controller = {
       		form.add_task_field.focus();
 		}.bind(this), false);
 
-		// remove task
-		addEventHandler(removeBtn, 'click', function(evt) {
+		// remove last task
+		addEventHandler(removeTask, 'click', function(evt) {
 			evt.preventDefault();
 			this.remove();			
+		}.bind(this), false);
+
+		// remove completed tasks
+		addEventHandler(removeBtn, 'click', function(evt) {
+			evt.preventDefault();
+			this.removeCompleted();			
 		}.bind(this), false);
 
 		// alphabetize
@@ -123,23 +129,28 @@ var Controller = {
 	},
 
 	add: function(name, num) {
-		var taskObj = new Task( (Array.isArray(name)) ? name[0] + ',' + name[1] : name );
+		var taskName 	= (Array.isArray(name)) ? name[0] : name,
+			taskStatus 	= (Array.isArray(name) && name[1] !== 'null') ? name[1] : false,
+			taskObj 	= new Task(taskName, taskStatus);
 
 		Model.addTask(taskObj);
 		View.renderAddition(name, num);
 	},
 	remove: function() {
+		var taskDIV = document.getElementById('list').lastElementChild;
+
+		Model.removeTask(taskDIV.firstElementChild.getAttribute('data-count'));
+		View.removeTask(taskDIV);
+	},
+	removeCompleted: function() {
 		// for each key in model, if has checked value true, delete from object
 		var checkedB = document.querySelectorAll('#list [type=checkbox]');
 		for (var i = 0, ii = checkedB.length; i < ii; i++) {
 			if (checkedB[i].checked) {
 				Model.removeTask(checkedB[i].getAttribute('data-count')); // Model
 
-				var parent = checkedB[i].parentNode; // View
-				while (parent.firstChild) {
-				    parent.removeChild(parent.firstChild);
-				}
-				parent.remove();
+				var taskDIV = checkedB[i].parentNode; // View
+				View.removeTask(taskDIV); 
 			}
 		}			
 	},
@@ -193,16 +204,16 @@ var Controller = {
 		    		nameArray.push([tasks[i].name, tasks[i].parentElement.getAttribute('class')]);
 
 		    	}
-		    	
-		    	nameArray.sort();
-		    	console.log(nameArray);
+		    	nameArray.sort(function (a, b) {
+				    return a[0].toLowerCase().localeCompare(b[0].toLowerCase());
+				});
 		    }
 
-		//  remove from View
+		//  remove unalphabetized list from View
 		while (list.firstChild) {
 		   list.removeChild(list.firstChild);
 		}
-		// for each one renderAddition(name, i)
+		// add alphabetized list to view
 		for (i=0, ii =nameArray.length; i < ii; i++) {
 			this.add(nameArray[i], i+1);
 		}
@@ -215,7 +226,6 @@ var Controller = {
 // View
 var View = {
 	renderAddition: function(name, num) {
-		console.log('render');
 	    var list 				= document.getElementById("list"),
 	    	dv   				= document.createElement("div"),
 	    	chbx  				= document.createElement('input'),
@@ -224,10 +234,12 @@ var View = {
 			chbx.type 			= "checkbox";
 			chbx.name 			= (Array.isArray(name)) ? name[0] : name;
 			chbx.setAttribute('data-count', num);
-			label.textContent 	= name;
+			label.textContent 	= chbx.name;
 			dv.appendChild(chbx);
 			dv.appendChild(label);
-	    
+			if (Array.isArray(name) && name[1] !== null) dv.setAttribute('class', name[1]);
+	    	if (name[1] === 'completed') chbx.checked = true;
+
 	    list.appendChild(dv);
 
 	    // add event listeners to dynamically-created content
@@ -242,6 +254,14 @@ var View = {
  	},
 	render: function() {
 
+	},
+	removeTask: function(taskDIV) {
+		var parent = taskDIV;
+
+		while (parent.firstChild) {
+		    parent.removeChild(parent.firstChild);
+		}
+		parent.remove();
 	},
 	completed: function(chbx) {
 		chbx.checked = true;
@@ -271,4 +291,4 @@ var View = {
 	}
 }
 
-Controller.watch(document.getElementById('input'), document.getElementById('removeBtn'), document.getElementById('alphabetize'), document.getElementById('csv'));
+Controller.watch(document.getElementById('input'), document.getElementById('removeTask'), document.getElementById('removeBtn'), document.getElementById('alphabetize'), document.getElementById('csv'));
