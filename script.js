@@ -123,7 +123,7 @@ var Controller = {
 	},
 
 	add: function(name, num) {
-		var taskObj = new Task( (Array.isArray(name)) ? name[0], name[1] : name );
+		var taskObj = new Task( (Array.isArray(name)) ? name[0] + ',' + name[1] : name );
 
 		Model.addTask(taskObj);
 		View.renderAddition(name, num);

@@ -14,12 +14,25 @@
  		text-align: left;
  		font-size: 62.5%;
  		/*background: #42b188;*/
- 		background: #fcf6df;
+ 		background: #ECE9DF; /*#fcf6df;*/
  		font-family: 'Merriweather', serif;
  		padding: .5% 2%;
+ 		margin: 0;
+ 		border-top: 4px solid #111;
  	}
  	h1 {
- 		margin-bottom: 40px;
+ 		margin-bottom: 60px;
+ 	}
+ 	.checkLogo {
+		border: 2px solid #999;
+		padding: 2px 7px;
+		background-color: #eee;
+		font-size: 14px;
+		position: relative;
+		top: -3px;
+		-webkit-border-radius: 3px;
+		-moz-border-radius: 3px;
+		border-radius: 3px;
  	}
  	#input {
  		max-width: 960px;
@@ -69,7 +82,7 @@
  	}
  	
  	#list .in-progress {
- 		background: #699DB1; /*F3924F;*/
+ 		background: #53AACB;; /*F3924F;*/
  	}
  	#list .completed:after, #list .in-progress:after, #list div:after {
  		content: "completed";
@@ -141,7 +154,7 @@
 
 <body>   
 	<form id="input">
-		<h1>&#x02713;&nbsp;&nbsp;TaskMaster</h1>
+		<h1><span class="checkLogo">&#x02713;</span>&nbsp;&nbsp;TaskMaster</h1>
 		<input type="text" name="add_task_field" autofocus required >
 		<button type="submit">Add Task</button> <!-- // -->
 	
