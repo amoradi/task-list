@@ -15,6 +15,8 @@ Element.prototype.remove = function() {
 var Model = function() {
 	
 	var _model 	= {},
+		name,
+		dueDate,
 		counter = 0;
 
 	function _resetModel() {
@@ -22,6 +24,22 @@ var Model = function() {
 		for (var member in _model) {
 			_removeTask(member);
 		}
+	}
+
+	function _setName(listName) {
+		name = listName;
+	}
+
+	function _getName() {
+		return name;
+	}
+
+	function _setDate(dueDate) {
+		date = dueDate;
+	}
+
+	function _getDate() {
+		return date;
 	}
 
 	function _addTask(obj) {
@@ -78,8 +96,12 @@ var Model = function() {
 		getTaskCnt: _getTaskCnt,
 		resetModel: _resetModel,
 		writeCSV: _writeCSV,
+		setName: _setName,
+		getName: _getName,
+		setDate: _setDate,
+		getDate: _getDate,
 		model: _model
-	}
+	};
 }();
 
 function Task(name, status) { // Task constructor
@@ -92,13 +114,19 @@ function Task(name, status) { // Task constructor
 // Controller
 var Controller = {
 	counter: 0,
-	watch: function(form, removeTask, removeBtn, alphabetize, csv) {
+	watch: function(form, removeTask, removeBtn, alphabetize, csv, createForm) {
 	   
+		// create List
+		addEventHandler(createForm, 'submit', function(evt) {
+			evt.preventDefault();
+			this.createList(createForm.listName.value, createForm.dueDate.value || createForm.dueDate.placeholder);
+		}.bind(this), false);
+
 		// add task
 		addEventHandler(form, 'submit', function(evt) {
 			evt.preventDefault(); // prevent the form from being submitted
       		this.counter += 1;
-      		this.add(form.add_task_field.value, this.counter); // add to Model and View
+      		this.addTask(form.add_task_field.value, this.counter); // add to Model and View
       		form.add_task_field.value = "";
       		form.add_task_field.focus();
 		}.bind(this), false);
@@ -127,8 +155,35 @@ var Controller = {
 			this.writeCSV();
 		}.bind(this), false);
 	},
+	addPlaceHolderDate: function() { 
+		var d 			= new Date(),
+		    m 			= d.getMonth() + 1,
+		    day 		= d.getDate(),
+		    year 		= d.getFullYear(),
+			dateString 	= m + "/" + day + "/" + year;
 
-	add: function(name, num) {
+			document.getElementsByName("dueDate")[0].placeholder = dateString;
+	},
+	validateDate: function(year, month, day) {
+	    var d = new Date(year, month, day);
+	    if (d.getFullYear() == year && d.getMonth() == month && d.getDate() == day) {
+	        return true;
+	    }
+	    return false;
+	},
+	createList: function(listName, dueDate) {
+		var dueDate = dueDate.split('/');
+		
+		if (this.validateDate(dueDate[2], dueDate[0], dueDate[1])) {
+			Model.setName(listName);
+			Model.setDate(dueDate.join('/'));
+			View.addList(listName, dueDate);
+		}
+		else {
+			View.invalidDate();
+		}
+	},
+	addTask: function(name, num) {
 		var taskName 	= (Array.isArray(name)) ? name[0] : name,
 			taskStatus 	= (Array.isArray(name) && name[1] !== 'null') ? name[1] : false,
 			taskObj 	= new Task(taskName, taskStatus);
@@ -215,7 +270,7 @@ var Controller = {
 		}
 		// add alphabetized list to view
 		for (i=0, ii =nameArray.length; i < ii; i++) {
-			this.add(nameArray[i], i+1);
+			this.addTask(nameArray[i], i+1);
 		}
 	},
 	writeCSV: function() {
@@ -225,6 +280,14 @@ var Controller = {
 
 // View
 var View = {
+	addList: function(listName, dueDate) {
+		 var h1	= document.getElementById("listName"),
+			 dueDate = new Date(dueDate.join('/'));
+		 
+		 h1.innerHTML = listName + "<span>Due on <strong>" + dueDate.toDateString() + "</strong></span>";
+		 document.getElementById("createList").setAttribute("class", "hide");
+		 document.getElementById("input").removeAttribute("class", "");
+	},
 	renderAddition: function(name, num) {
 	    var list 				= document.getElementById("list"),
 	    	dv   				= document.createElement("div"),
@@ -291,4 +354,5 @@ var View = {
 	}
 }
 
-Controller.watch(document.getElementById('input'), document.getElementById('removeTask'), document.getElementById('removeBtn'), document.getElementById('alphabetize'), document.getElementById('csv'));
+Controller.addPlaceHolderDate();
+Controller.watch(document.getElementById('input'), document.getElementById('removeTask'), document.getElementById('removeBtn'), document.getElementById('alphabetize'), document.getElementById('csv'), document.getElementById('createList'));

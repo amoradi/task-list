@@ -7,7 +7,7 @@
   <title>MVC</title>
   <meta name="description" content="">
   <meta name="author" content="">
-  <link href='http://fonts.googleapis.com/css?family=Merriweather:400,900,700' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Merriweather:300,400,900,700' rel='stylesheet' type='text/css'>
   <!-- <link rel="stylesheet" href="css/styles.css?v=1.0"> -->
   <style>
   	html {
@@ -16,20 +16,24 @@
  	body {
  		text-align: left;
  		font-size: 62.5%;
+ 		color: #111;
  		/*background: #42b188;*/
  		background: #ECE9DF; /*#fcf6df;*/
  		font-family: 'Merriweather', serif;
  		padding: 0;
  		margin: 0;
- 		/*border-top: 4px solid #111;*/
+ 		/*border-top: 2px solid #111;*/
  	}
- 	h1 {
+ 	header h1 {
+ 		padding-top: 25px;
+ 		padding-left: 4px;
  		margin-bottom: 60px;
  	}
  	.checkLogo {
 		border: 2px solid #999;
 		padding: 2px 7px;
 		background-color: #eee;
+		color: green;
 		font-size: 14px;
 		position: relative;
 		top: -3px;
@@ -37,16 +41,40 @@
 		-moz-border-radius: 3px;
 		border-radius: 3px;
  	}
- 	#input {
- 		width: 80%;
+ 	form {
+ 		visibility:visible;
+  		opacity:1;
+ 		-webkit-transition: all 200ms ease;
+	    -moz-transition: all 200ms ease;
+	    -o-transition: all 200ms ease;
+	    transition: all 200ms ease;
+ 	}
+ 	#listName {
+ 		margin-top: 0;
+ 		padding-left: 4px;
+		margin-top: 0;
+		margin-bottom: 25px;
+		width: 95%;
+		box-sizing: border-box;
+		-moz-box-sizing: border-box;
+ 	}
+ 	#listName span {
+ 		font-weight: 300;
+ 		display: block;
+ 		font-size: 14px;
+  		padding-top: 4px;
+ 	}
+ 	#input, header, #createList {
+ 		width: 70%;
   		margin: 0 0 0 20px;
   		float: left;
  	}
  	#list {
- 		width: 100%;
+ 		width: 95%;
  		margin: 20px 0;
  		overflow: hidden;
  	}
+
  	#list div {
  		cursor: pointer;
  		overflow-y: auto;
@@ -135,7 +163,7 @@
   		vertical-align: middle;
   		margin-right: 5px;
  	}
- 	[name=add_task_field] {
+ 	[name=add_task_field], [name=listName], [name=dueDate]  {
  		display: inline-block;
  		vertical-align: middle;
  		margin-right: 7px;
@@ -146,13 +174,16 @@
 		padding: 0 10px;
 		font-family: 'Merriweather', serif;
  	}
- 	[name=add_task_field]:focus {
+ 	[name=add_task_field]:focus, [name=listName]:focus, [name=dueDate]:focus {
  		border: none;
   		outline: none;
   	}
-  	#addTask {
+  	.green {
   		background: rgb(167, 196, 81);
   		border: outset 2px rgb(167, 196, 81);
+  	}
+  	.blue {
+
   	}
   	.btnGroup {
   		display: inline-block;
@@ -164,7 +195,7 @@
 		margin-top: 10px;
 		font-size: 14px;
 		overflow: hidden;
-		width: 90%;
+		width: 95%;
 		min-height: 200px;
 		box-sizing: border-box;
 		-moz-box-sizing: border-box;
@@ -172,32 +203,51 @@
 		outline: none;
 		resize: vertical;
   	}
+  	.hide {
+  		visibility:hidden;
+  		opacity:0;
+  		height: 0;
+  		-webkit-transition: all 200ms ease;
+	    -moz-transition: all 200ms ease;
+	    -o-transition: all 200ms ease;
+	    transition: all 200ms ease;
+  	}
+  	.sidebar {
+  		width: 30%;
+	    height: 100%;
+	    background-color: #D1CFC8;
+	    min-height: 200px;
+	    position: fixed;
+	    z-index: 999;
+	    right: 0;
+  	}
   </style>
   <!--[if lt IE 9]>
   <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
 </head>
 
-<body>   
-	<form id="input">
-		<h1><span class="checkLogo">&#x02713;</span>&nbsp;&nbsp;TaskMaster</h1>
-		<input type="text" name="add_task_field" autofocus required >
-		<div class="btnGroup"><button type="submit" id="addTask"><span>&plus;</span> Add Task</button><button id="removeTask"><span>&minus;</span> Remove Task</button><button id="removeBtn" name="remove"><span>&minus;</span> Remove Completed Tasks</button></div><!-- // -->
+<body>
+	<header>
+		<h1><span class="checkLogo">&#x02713;</span>&nbsp;&nbsp;Task<span>Master<span></h1>
+	</header>
+	<form id="createList">
+		<input type="text" name="listName" autofocus required placeholder="Enter List Name">
+		<input type="text" name="dueDate" autofocus  placeholder="07/25/2015">
+		<button type="submit" id="addList" class="green"><span>&plus;</span> Create List</button>
+	</form>   
+	<form id="input" class="hide">
+		<!-- <h1><span class="checkLogo">&#x02713;</span>&nbsp;&nbsp;TaskMaster</h1> -->
+		<h1 id="listName">Vaction Checklist <span>Due August 25, 2016</span></h1>
+		<input type="text" name="add_task_field" autofocus required palceholder="Enter Task">
+		<div class="btnGroup"><button type="submit" id="addTask" class="green"><span>&plus;</span> Add Task</button><button id="removeTask"><span>&minus;</span> Remove Task</button><button id="removeBtn" name="remove"><span>&minus;</span> Remove Completed Tasks</button></div><!-- // -->
 	
 		<div id="list">
 			
 		</div>
-			<button id="csv"><span>&dtrif;</span> Format to CSV</button><button id="alphabetize" name="alphabetize"><span>&Alpha;</span> Alphabetize</button><!-- // -->
+			<button id="csv"><span>&dtrif;</span> Format to CSV</button><button id="alphabetize" name="alphabetize"><span>&Alpha;</span> Alphabetize</button><button id="saveList" class="green"><span></span> Save List</button><!-- // -->
 	</form>
-	<div class="sidebar" style="
-    width: 20%;
-    height: 100%;
-    background-color: #E0DDD4;
-    min-height: 200px;
-    position: fixed;
-    z-index: 999;
-    right: 0;
-"></div>
+	<div class="sidebar"></div>
 	<script src="script.js"></script>
 </body>
 </html>
