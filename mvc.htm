@@ -1,5 +1,3 @@
-<!doctype html>
-
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -22,24 +20,30 @@
  		font-family: 'Merriweather', serif;
  		padding: 0;
  		margin: 0;
+ 		padding-bottom: 100px;
+ 		overflow: hidden;
+ 		min-width: 960px;
  		/*border-top: 2px solid #111;*/
  	}
  	header h1 {
- 		padding-top: 25px;
+ 		padding: 12px 10px;
  		padding-left: 4px;
- 		margin-bottom: 60px;
+ 		color: #111;
+ 		letter-spacing: 4px;
+ 		font-size: 18px;
  	}
  	.checkLogo {
-		border: 2px solid #999;
+		/*border: 2px solid #999;*/
 		padding: 2px 7px;
-		background-color: #eee;
-		color: green;
+		background-color: #fff;
+		/*color: green;*/
 		font-size: 14px;
 		position: relative;
 		top: -3px;
 		-webkit-border-radius: 3px;
 		-moz-border-radius: 3px;
 		border-radius: 3px;
+		letter-spacing: 0px;
  	}
  	form {
  		visibility:visible;
@@ -66,13 +70,23 @@
  	}
  	#input, header, #createList {
  		width: 70%;
-  		margin: 0 0 0 20px;
+  		margin: 0 0 0 4%;
   		float: left;
+ 	}
+ 	header {
+ 		width: 100%;
+ 		margin: 0;
+ 		padding: 10px 20px 10px 4%;
+ 		background: #fff;
+ 		margin-bottom: 25px;
+ 		box-sizing: border-box;
+ 		-moz-box-sizing: border-box;
  	}
  	#list {
  		width: 95%;
  		margin: 20px 0;
  		overflow: hidden;
+ 		counter-reset: section;
  	}
 
  	#list div {
@@ -90,6 +104,18 @@
  		/*-webkit-box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.5);
 		-moz-box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.5);
 		box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.5);*/
+		counter-increment: section;
+ 	}
+ 	#list div:before {
+ 		content: counter(section);
+ 		position: absolute;
+		right: 145px;
+		z-index: 99;
+		font-size: 12px;
+		color: #fff;
+		top: 10px;
+		opacity: .5;
+		text-align: right;
  	}
  	#list [type=checkbox] {
  		margin: 0 15px 0 0;
@@ -193,7 +219,7 @@
 		display: block;
 		padding: 15px 20px;
 		margin-top: 10px;
-		font-size: 14px;
+		font-size: 13px;
 		overflow: hidden;
 		width: 95%;
 		min-height: 200px;
@@ -213,13 +239,57 @@
 	    transition: all 200ms ease;
   	}
   	.sidebar {
-  		width: 30%;
+  		width: 25%;
+  		min-width: 300px;
 	    height: 100%;
+	    padding: 0px 0px 40px 0px;
+	    box-sizing: border-box;
+	    -moz-box-sizing: border-box;
 	    background-color: #D1CFC8;
+	    background-color: #454545;
 	    min-height: 200px;
 	    position: fixed;
 	    z-index: 999;
 	    right: 0;
+		-webkit-box-shadow: -4px 0px 3px 0px rgba(0,0,0,0.24);
+		-moz-box-shadow: -4px 0px 3px 0px rgba(0,0,0,0.24);
+		box-shadow: -4px 0px 3px 0px rgba(0,0,0,0.24);
+		direction: rtl;
+		overflow-y: scroll;
+  	}
+  	.myLists {
+		display: table;
+		font-size: 13px;
+		line-height: 1rem;
+		padding: 8px 11px;
+		background-color: #bbb;
+		background-color: #454545;
+		/*margin: 4px auto;*/
+		color: #fff;
+		width: 100%;
+		/*border: outset 2px #bbb;*/
+		color: #999;
+		box-sizing: border-box;
+		-moz-box-sizing: border-box;
+  		word-break: break-all;
+  		direction: ltr;
+  		border-bottom: 1px solid rgb(83, 82, 82);
+  	}
+  	.myLists:hover, .myLists:focus {
+  		cursor: pointer;
+  		background-color: rgb(83, 82, 82);
+  		color: #fff;
+  	}
+  	.myLists > span:first-child {
+  		width: 80%;
+  		font-size: 11px;
+  	}
+  	.savedListDates, .myLists > span:first-child {
+  		display: table-cell;
+
+  	}
+  	.savedListDates {
+  		font-size: 11px;
   	}
   </style>
   <!--[if lt IE 9]>
@@ -229,7 +299,7 @@
 
 <body>
 	<header>
-		<h1><span class="checkLogo">&#x02713;</span>&nbsp;&nbsp;Task<span>Master<span></h1>
+		<h1><span class="checkLogo">&#x02713;</span>&nbsp;Task<span>Master<span></h1>
 	</header>
 	<form id="createList">
 		<input type="text" name="listName" autofocus required placeholder="Enter List Name">
@@ -245,7 +315,7 @@
 		<div id="list">
 			
 		</div>
-			<button id="csv"><span>&dtrif;</span> Format to CSV</button><button id="alphabetize" name="alphabetize"><span>&Alpha;</span> Alphabetize</button><button id="saveList" class="green"><span></span> Save List</button><!-- // -->
+			<button id="csv"><span>&dtrif;</span> Format to CSV</button><button id="alphabetize" name="alphabetize"><span>&Alpha;</span> Alphabetize</button><button id="saveList" class="green"><span></span> Save List</button><button id="removeList" class=""><span></span> Delete List</button><!-- // -->
 	</form>
 	<div class="sidebar"></div>
 	<script src="script.js"></script>

@@ -26,6 +26,18 @@ var Model = function() {
 		}
 	}
 
+	function _saveToLocalStorage() {
+		if(typeof(Storage) !== "undefined") {
+			var listName = _getName(),
+				listDate = _getDate();
+
+		    localStorage.setItem('taskMaster.'+listName, '[{"dueDate":"'+listDate+'"},' + JSON.stringify(_model) + ']' ); // store
+
+		} else {
+		    alert('Sorry, unable to save. No Web Storage support.');
+		}
+	}
+
 	function _setName(listName) {
 		name = listName;
 	}
@@ -35,7 +47,7 @@ var Model = function() {
 	}
 
 	function _setDate(dueDate) {
-		date = dueDate;
+		date = dueDate.toString();
 	}
 
 	function _getDate() {
@@ -100,60 +112,80 @@ var Model = function() {
 		getName: _getName,
 		setDate: _setDate,
 		getDate: _getDate,
+		saveToLocalStorage: _saveToLocalStorage,
 		model: _model
 	};
 }();
 
 function Task(name, status) { // Task constructor
 	return {
-		'name': name,
-		'status': (status) ? status : 'incomplete'
+		name: name,
+		status: (status) ? status : 'incomplete'
 	};
 }
 
 // Controller
 var Controller = {
 	counter: 0,
-	watch: function(form, removeTask, removeBtn, alphabetize, csv, createForm) {
+	watch: function(form, removeTask, removeBtn, alphabetize, csv, createList, saveList, deleteList) {
 	   
+		// save list to local storage
+		if (saveList) {
+			addEventHandler(saveList, 'click', function(evt) {
+				evt.preventDefault();
+				this.saveList();
+			}.bind(this), false);
+		}
+
 		// create List
-		addEventHandler(createForm, 'submit', function(evt) {
-			evt.preventDefault();
-			this.createList(createForm.listName.value, createForm.dueDate.value || createForm.dueDate.placeholder);
-		}.bind(this), false);
+		if (createList) {
+			addEventHandler(createList, 'submit', function(evt) {
+				evt.preventDefault();
+				this.createList(createList.listName.value, createList.dueDate.value || createList.dueDate.placeholder);
+			}.bind(this), false);
+		}
 
 		// add task
-		addEventHandler(form, 'submit', function(evt) {
-			evt.preventDefault(); // prevent the form from being submitted
-      		this.counter += 1;
-      		this.addTask(form.add_task_field.value, this.counter); // add to Model and View
-      		form.add_task_field.value = "";
-      		form.add_task_field.focus();
-		}.bind(this), false);
+		if (form) {
+			addEventHandler(form, 'submit', function(evt) {
+				evt.preventDefault(); // prevent the form from being submitted
+	      		this.counter += 1;
+	      		this.addTask(form.add_task_field.value, this.counter); // add to Model and View
+	      		form.add_task_field.value = "";
+	      		form.add_task_field.focus();
+			}.bind(this), false);
+		}
 
 		// remove last task
-		addEventHandler(removeTask, 'click', function(evt) {
-			evt.preventDefault();
-			this.remove();			
-		}.bind(this), false);
+		if (removeTask) {
+			addEventHandler(removeTask, 'click', function(evt) {
+				evt.preventDefault();
+				this.remove();			
+			}.bind(this), false);
+		}
 
 		// remove completed tasks
-		addEventHandler(removeBtn, 'click', function(evt) {
-			evt.preventDefault();
-			this.removeCompleted();			
-		}.bind(this), false);
+		if (removeBtn) {
+			addEventHandler(removeBtn, 'click', function(evt) {
+				evt.preventDefault();
+				this.removeCompleted();			
+			}.bind(this), false);
+		}
 
 		// alphabetize
-		addEventHandler(alphabetize, 'click', function(evt) {
-			evt.preventDefault();
-			this.alphabetize();
-		}.bind(this), false);
-
+		if (alphabetize) {
+			addEventHandler(alphabetize, 'click', function(evt) {
+				evt.preventDefault();
+				this.alphabetize();
+			}.bind(this), false);
+		}
 		// write
-		addEventHandler(csv, 'click', function(evt) {
-			evt.preventDefault();
-			this.writeCSV();
-		}.bind(this), false);
+		if (csv) {
+			addEventHandler(csv, 'click', function(evt) {
+				evt.preventDefault();
+				this.writeCSV();
+			}.bind(this), false);
+		}
 	},
 	addPlaceHolderDate: function() { 
 		var d 			= new Date(),
@@ -171,19 +203,29 @@ var Controller = {
 	    }
 	    return false;
 	},
-	createList: function(listName, dueDate) {
+	saveList: function() {
+		Model.saveToLocalStorage();
+		View.saveList();
+	},
+	createList: function(listName, dueDate, tasks) {
 		var dueDate = dueDate.split('/');
 		
 		if (this.validateDate(dueDate[2], dueDate[0], dueDate[1])) {
 			Model.setName(listName);
 			Model.setDate(dueDate.join('/'));
 			View.addList(listName, dueDate);
+
+			// if (tasks) {
+			// 	for each task
+			// this.counter = tasks[i].num; 
+			// 	this.addTask(tasks[i].name, tasks[i].num, tasks[i].status);
+			// }
 		}
 		else {
 			View.invalidDate();
 		}
 	},
-	addTask: function(name, num) {
+	addTask: function(name, num, status) {
 		var taskName 	= (Array.isArray(name)) ? name[0] : name,
 			taskStatus 	= (Array.isArray(name) && name[1] !== 'null') ? name[1] : false,
 			taskObj 	= new Task(taskName, taskStatus);
@@ -280,6 +322,24 @@ var Controller = {
 
 // View
 var View = {
+	saveList: function() {
+		var sidebar = document.getElementsByClassName('sidebar')[0];
+
+		for (var i =0, ii = localStorage.length; i < ii; i++) {
+			if (/^taskMaster/.test(localStorage.key(i))) {
+				var list = JSON.parse(localStorage.getItem(localStorage.key(i)));
+				console.log(list);
+				sidebar.innerHTML += '<span data-list='+localStorage.key(i) + ' class="myLists"><span>' + localStorage.key(i).slice(11) + '</span><span class="savedListDates">' + list[0].dueDate + '</span></span>';
+
+			}
+		}
+		// Object.keys(localStorage)
+	 //      .forEach(function(key){
+	 //           if (/^taskMaster/.test(key)) {
+	 //               localStorage.removeItem(key);
+	 //           }
+  //      });
+	},
 	addList: function(listName, dueDate) {
 		 var h1	= document.getElementById("listName"),
 			 dueDate = new Date(dueDate.join('/'));
@@ -355,4 +415,4 @@ var View = {
 }
 
 Controller.addPlaceHolderDate();
-Controller.watch(document.getElementById('input'), document.getElementById('removeTask'), document.getElementById('removeBtn'), document.getElementById('alphabetize'), document.getElementById('csv'), document.getElementById('createList'));
+Controller.watch(document.getElementById('input'), document.getElementById('removeTask'), document.getElementById('removeBtn'), document.getElementById('alphabetize'), document.getElementById('csv'), document.getElementById('createList'), document.getElementById('saveList'));
