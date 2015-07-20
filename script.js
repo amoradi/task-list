@@ -20,10 +20,10 @@ var Model = function() {
 		counter = 0;
 
 	function _resetModel() {
-		counter = 0;
 		for (var member in _model) {
 			_removeTask(member);
 		}
+		counter = 0;
 	}
 
 	function _saveToLocalStorage() {
@@ -60,6 +60,7 @@ var Model = function() {
 	}
 
 	function _removeTask(task_num) {
+		counter = task_num -1;
 		delete _model[task_num]; 
 	}
 
@@ -127,7 +128,11 @@ function Task(name, status) { // Task constructor
 // Controller
 var Controller = {
 	counter: 0,
-	watch: function(form, removeTask, removeBtn, alphabetize, csv, createList, saveList, deleteList) {
+	start: function() {
+		this.addPlaceHolderDate();
+		View.drawSavedLists();
+	},
+	watch: function(addTask, removeTask, removeBtn, alphabetize, csv, createList, saveList, deleteList, savedList) {
 	   
 		// save list to local storage
 		if (saveList) {
@@ -146,13 +151,13 @@ var Controller = {
 		}
 
 		// add task
-		if (form) {
-			addEventHandler(form, 'submit', function(evt) {
+		if (addTask) {
+			addEventHandler(addTask, 'submit', function(evt) {
 				evt.preventDefault(); // prevent the form from being submitted
-	      		this.counter += 1;
-	      		this.addTask(form.add_task_field.value, this.counter); // add to Model and View
-	      		form.add_task_field.value = "";
-	      		form.add_task_field.focus();
+				this.counter += 1;
+	      		this.addTask(addTask.add_task_field.value, this.counter); // add to Model and View
+	      		addTask.add_task_field.value = "";
+	      		addTask.add_task_field.focus();
 			}.bind(this), false);
 		}
 
@@ -205,21 +210,35 @@ var Controller = {
 	},
 	saveList: function() {
 		Model.saveToLocalStorage();
-		View.saveList();
+		var x = true;
+		View.drawSavedLists(x);
 	},
 	createList: function(listName, dueDate, tasks) {
+		// remove from Model
+		Model.resetModel();
+
 		var dueDate = dueDate.split('/');
 		
 		if (this.validateDate(dueDate[2], dueDate[0], dueDate[1])) {
 			Model.setName(listName);
 			Model.setDate(dueDate.join('/'));
 			View.addList(listName, dueDate);
+ 			
+ 			// remove previous list items
+ 			for (var i =0, ii = this.counter; i < ii; i++) {
+ 				this.remove();
+ 			}
 
-			// if (tasks) {
-			// 	for each task
-			// this.counter = tasks[i].num; 
-			// 	this.addTask(tasks[i].name, tasks[i].num, tasks[i].status);
-			// }
+ 			this.counter = 0;
+			if (tasks) {
+				for (var member in tasks) {
+					if (tasks.hasOwnProperty(member)) {
+				        Controller.counter = parseInt(member);
+				        console.log("member# " + member);				       
+				        this.addTask(tasks[member].name, member, tasks[member].status);
+				    }
+				}
+			}
 		}
 		else {
 			View.invalidDate();
@@ -228,13 +247,16 @@ var Controller = {
 	addTask: function(name, num, status) {
 		var taskName 	= (Array.isArray(name)) ? name[0] : name,
 			taskStatus 	= (Array.isArray(name) && name[1] !== 'null') ? name[1] : false,
+			taskStatus  = taskStatus || status,
+			taskStatus  = (taskStatus === 'in-progress') ? 'in progress' : taskStatus,
 			taskObj 	= new Task(taskName, taskStatus);
 
 		Model.addTask(taskObj);
-		View.renderAddition(name, num);
+		View.renderAddition(name, num, status);
 	},
 	remove: function() {
 		var taskDIV = document.getElementById('list').lastElementChild;
+		this.counter -= 1;
 
 		Model.removeTask(taskDIV.firstElementChild.getAttribute('data-count'));
 		View.removeTask(taskDIV);
@@ -322,23 +344,36 @@ var Controller = {
 
 // View
 var View = {
-	saveList: function() {
+	drawSavedLists: function(clickedSave) {
+		console.log(clickedSave);
+		if (typeof clickedSave !== "undefined" && clickedSave) { 
+			alert("List saved!");
+		}
 		var sidebar = document.getElementsByClassName('sidebar')[0];
-
+		sidebar.innerHTML = '';
 		for (var i =0, ii = localStorage.length; i < ii; i++) {
 			if (/^taskMaster/.test(localStorage.key(i))) {
 				var list = JSON.parse(localStorage.getItem(localStorage.key(i)));
-				console.log(list);
-				sidebar.innerHTML += '<span data-list='+localStorage.key(i) + ' class="myLists"><span>' + localStorage.key(i).slice(11) + '</span><span class="savedListDates">' + list[0].dueDate + '</span></span>';
-
+				sidebar.innerHTML += '<span class="savedList"><span>' + localStorage.key(i).slice(11) + '</span><span class="savedListDates">' + list[0].dueDate + '</span></span>';
 			}
 		}
-		// Object.keys(localStorage)
-	 //      .forEach(function(key){
-	 //           if (/^taskMaster/.test(key)) {
-	 //               localStorage.removeItem(key);
-	 //           }
-  //      });
+		
+		// + add evt listeners to newly created content
+		var savedLists = document.getElementsByClassName('savedList');
+		for (var i = 0, ii = savedLists.length; i < ii; i++) {
+			addEventHandler(savedLists[i], 'click', function(evt) {
+				evt.preventDefault();
+				
+				var titleSpan = evt.currentTarget.firstElementChild,
+					listName  = titleSpan.innerHTML,
+					dueDate   = titleSpan.nextElementSibling.innerHTML,
+					tasks 	  = window.localStorage.getItem("taskMaster." + listName),
+					tasks 	  = JSON.parse(tasks),
+					tasks     = tasks[1];
+
+				Controller.createList(listName, dueDate, tasks);
+			});
+		}
 	},
 	addList: function(listName, dueDate) {
 		 var h1	= document.getElementById("listName"),
@@ -348,7 +383,7 @@ var View = {
 		 document.getElementById("createList").setAttribute("class", "hide");
 		 document.getElementById("input").removeAttribute("class", "");
 	},
-	renderAddition: function(name, num) {
+	renderAddition: function(name, num, status) {
 	    var list 				= document.getElementById("list"),
 	    	dv   				= document.createElement("div"),
 	    	chbx  				= document.createElement('input'),
@@ -360,8 +395,18 @@ var View = {
 			label.textContent 	= chbx.name;
 			dv.appendChild(chbx);
 			dv.appendChild(label);
-			if (Array.isArray(name) && name[1] !== null) dv.setAttribute('class', name[1]);
-	    	if (name[1] === 'completed') chbx.checked = true;
+
+			if (Array.isArray(name) && name[1] !== null) {
+				dv.setAttribute('class', name[1]);
+				if (name[1] === 'completed') chbx.checked = true; 
+	    	}
+	    	else if (status === 'in progress') { 
+	    		dv.setAttribute('class', 'in-progress');
+	    	}
+	    	else if (status === 'completed') {
+	    		dv.setAttribute('class', status);
+	    		chbx.checked = true;
+	    	}
 
 	    list.appendChild(dv);
 
@@ -414,5 +459,5 @@ var View = {
 	}
 }
 
-Controller.addPlaceHolderDate();
-Controller.watch(document.getElementById('input'), document.getElementById('removeTask'), document.getElementById('removeBtn'), document.getElementById('alphabetize'), document.getElementById('csv'), document.getElementById('createList'), document.getElementById('saveList'));
+Controller.start();
+Controller.watch(document.getElementById('input'), document.getElementById('removeTask'), document.getElementById('removeBtn'), document.getElementById('alphabetize'), document.getElementById('csv'), document.getElementById('createList'), document.getElementById('saveList'), document.getElementById('removeList'));

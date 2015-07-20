@@ -23,17 +23,18 @@
  		padding-bottom: 100px;
  		overflow: hidden;
  		min-width: 960px;
- 		/*border-top: 2px solid #111;*/
+ 		
  	}
  	header h1 {
- 		padding: 12px 10px;
- 		padding-left: 4px;
- 		color: #111;
- 		letter-spacing: 4px;
- 		font-size: 18px;
+ 		/*padding: 12px 10px;*/
+ 		/*padding-left: 4px;*/
+ 		color: #999;
+ 		letter-spacing: 1px;
+ 		font-size: 15px;
  	}
  	.checkLogo {
-		/*border: 2px solid #999;*/
+ 		display: none;
+ 		/*border: 2px solid #999;*/
 		padding: 2px 7px;
 		background-color: #fff;
 		/*color: green;*/
@@ -54,11 +55,13 @@
 	    transition: all 200ms ease;
  	}
  	#listName {
+ 		font-size: 1.8rem;
  		margin-top: 0;
  		padding-left: 4px;
 		margin-top: 0;
-		margin-bottom: 25px;
+		margin-bottom: 45px;
 		width: 95%;
+		font-weight: 900;
 		box-sizing: border-box;
 		-moz-box-sizing: border-box;
  	}
@@ -76,9 +79,9 @@
  	header {
  		width: 100%;
  		margin: 0;
- 		padding: 10px 20px 10px 4%;
+ 		padding: 5px 20px 5px 4%;
  		background: #fff;
- 		margin-bottom: 25px;
+ 		margin-bottom: 45px;
  		box-sizing: border-box;
  		-moz-box-sizing: border-box;
  	}
@@ -257,7 +260,7 @@
 		direction: rtl;
 		overflow-y: scroll;
   	}
-  	.myLists {
+  	.savedList {
 		display: table;
 		font-size: 13px;
 		line-height: 1rem;
@@ -275,18 +278,17 @@
   		direction: ltr;
   		border-bottom: 1px solid rgb(83, 82, 82);
   	}
-  	.myLists:hover, .myLists:focus {
+  	.savedList:hover, .savedList:focus {
   		cursor: pointer;
   		background-color: rgb(83, 82, 82);
   		color: #fff;
   	}
-  	.myLists > span:first-child {
+  	.savedList > span:first-child {
   		width: 80%;
   		font-size: 11px;
   	}
-  	.savedListDates, .myLists > span:first-child {
+  	.savedListDates, .savedList > span:first-child {
   		display: table-cell;
-
   	}
   	.savedListDates {
   		font-size: 11px;
