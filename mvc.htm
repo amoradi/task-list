@@ -54,7 +54,7 @@
 	    -o-transition: all 200ms ease;
 	    transition: all 200ms ease;
  	}
- 	#listName {
+ 	#listName, #createList h1 {
  		font-size: 1.8rem;
  		margin-top: 0;
  		padding-left: 4px;
@@ -65,7 +65,7 @@
 		box-sizing: border-box;
 		-moz-box-sizing: border-box;
  	}
- 	#listName span {
+ 	#listName span, #createList h1 span {
  		font-weight: 300;
  		display: block;
  		font-size: 14px;
@@ -98,7 +98,7 @@
  		text-align: left;
  		margin: 3px 0;
  		line-height: 30px;
-  		padding: 5px 140px 5px 20px;
+  		padding: 1px 140px 1px 20px;
  		font-size: 1.4rem;
  		color: #fff;
  		position: relative;
@@ -108,15 +108,16 @@
 		-moz-box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.5);
 		box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.5);*/
 		counter-increment: section;
+		/*border: 4px solid transparent;*/
  	}
  	#list div:before {
  		content: counter(section);
  		position: absolute;
-		right: 145px;
+		right: 165px;
 		z-index: 99;
 		font-size: 12px;
 		color: #fff;
-		top: 10px;
+		top: 6px;
 		opacity: .5;
 		text-align: right;
  	}
@@ -133,6 +134,22 @@
  		cursor: pointer;
  		word-wrap: break-word;
  	}
+ 	#list input[type=text] {
+		color: #fff;
+		background-color: transparent;
+		border: none;
+		width: 90%;
+		padding-left: 4px;
+		position: relative;
+		top: 1px;
+		font-size: 1.3rem;
+		font-family: 'Merriweather', serif;
+ 	}
+ 	#list input[type=text]:focus {
+ 		border: none;
+ 		outline: none;
+
+ 	}
  	#list .completed {
  		background: #4fd1a1;
  		text-decoration: line-through;
@@ -146,8 +163,8 @@
 		color: #fff;
 		display: block;
 		position: absolute;
-		right: 15px;
-		bottom: 15%;
+		right: 35px;
+		bottom: 10%;
 		font-size: 14px;
 		background-color: rgba(255,255,255,.2);
 		padding: 2px 10px;
@@ -164,12 +181,12 @@
  		cursor: pointer;
 		background: #999;
 		border: none;
-		padding: 0px 20px 0 10px;
-		line-height: 35px;
+		padding: 0px 20px; /*20px 0 10px;*/
+		line-height: 25px;
 		color: #fff;
-		margin: 0 7px 0 0;
+		margin: 0 3px 0 0;
 		font-family: 'Merriweather', serif;
-		font-size: 16px;
+		font-size: 14px;
 		margin-bottom: 10px;
 		border: outset 2px #999;
 		display: inline-block;
@@ -260,6 +277,16 @@
 		direction: rtl;
 		overflow-y: scroll;
   	}
+  	.sidebar:before {
+  		display: block;
+  		color: #fff;
+  		content: "Saved Lists";
+		font-size: 12px;
+		line-height: 1rem;
+		padding: 17px 11px;
+		letter-spacing: .5px;
+		color: #999;
+  	}
   	.savedList {
 		display: table;
 		font-size: 13px;
@@ -293,6 +320,48 @@
   	.savedListDates {
   		font-size: 11px;
   	}
+  	#list [data-indent=indentLeft] {
+  		margin-left: 20px;
+  	}
+  	#list [data-indent=indentLeftLeft] {
+  		margin-left: 40px;
+  	}
+  	#list [data-selected=true] {
+  		/*background-color: #ccc;*/
+  	}
+  	/*#list .completed[data-selected=true] {
+  		border-color: #4fd1a1;
+  	}
+  	#list .in-progress[data-selected=true] {
+  		border-color: #53AACB;
+  	}*/
+  	.radio {
+		background-color: #fff;
+		width: 24px;
+		height: 100%;
+		display: block;
+		position: absolute;
+		right: 0px;
+		top: 0px;
+		 box-sizing: border-box;
+		z-index: 100;
+		border-top: 2px solid rgb(236, 233, 223);
+		border-bottom: 2px solid rgb(236, 233, 223);
+  	}
+  	.radio:before {
+  		content: "";
+  		background: #ECE9DF;
+  		display: block;
+  		width: 8px;
+  		height: 100%;
+  		position: absolute;
+  		left: 0;
+  		top: 0;
+
+  	}
+  	[data-selected] .radio {
+  		background: rgb(254, 101, 4);
+  	}
   </style>
   <!--[if lt IE 9]>
   <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -304,20 +373,21 @@
 		<h1><span class="checkLogo">&#x02713;</span>&nbsp;Task<span>Master<span></h1>
 	</header>
 	<form id="createList">
+		<h1>Create a New List<span>Go ahead, have at it.</span></h1>
 		<input type="text" name="listName" autofocus required placeholder="Enter List Name">
 		<input type="text" name="dueDate" autofocus  placeholder="07/25/2015">
-		<button type="submit" id="addList" class="green"><span>&plus;</span> Create List</button>
+		<button type="submit" id="addList" class="green"><!-- <span>&plus;</span> --> Create List</button>
 	</form>   
 	<form id="input" class="hide">
 		<!-- <h1><span class="checkLogo">&#x02713;</span>&nbsp;&nbsp;TaskMaster</h1> -->
 		<h1 id="listName">Vaction Checklist <span>Due August 25, 2016</span></h1>
 		<input type="text" name="add_task_field" autofocus required palceholder="Enter Task">
-		<div class="btnGroup"><button type="submit" id="addTask" class="green"><span>&plus;</span> Add Task</button><button id="removeTask"><span>&minus;</span> Remove Task</button><button id="removeBtn" name="remove"><span>&minus;</span> Remove Completed Tasks</button></div><!-- // -->
+		<div class="btnGroup"><button type="submit" id="addTask" class="green"><!-- <span>&plus;</span> --> Add Task</button><button id="removeTask"><!-- <span>&minus;</span> --> Remove Task</button><button id="removeBtn" name="remove"><!-- <span>&minus;</span> --> Remove Completed Tasks</button><button>Mark 'in progress'</button><button data-indent="left">></button><button data-indent="right"><</button><!-- <button id="csv"><span>&dtrif;</span> Format to CSV</button> --><button id="alphabetize" name="alphabetize"><!-- <span>&Alpha;</span>  -->Alphabetize</button></div><!-- // -->
 	
 		<div id="list">
 			
 		</div>
-			<button id="csv"><span>&dtrif;</span> Format to CSV</button><button id="alphabetize" name="alphabetize"><span>&Alpha;</span> Alphabetize</button><button id="saveList" class="green"><span></span> Save List</button><button id="removeList" class=""><span></span> Delete List</button><!-- // -->
+			<button id="saveList" class="green">Save List</button><button>Create New List</button><button id="removeList" class="">Delete List</button><!-- // -->
 	</form>
 	<div class="sidebar"></div>
 	<script src="script.js"></script>

@@ -64,6 +64,10 @@ var Model = function() {
 		delete _model[task_num]; 
 	}
 
+	function _updateTask(task_num, taskName) {
+		_model[task_num].name = taskName;
+	}
+
 	function _checkTask(task_num) {
 		_model[task_num].status = 'completed';
 	}
@@ -103,6 +107,7 @@ var Model = function() {
 	return {
 		addTask: _addTask,
 		removeTask: _removeTask,
+		updateTask: _updateTask,
 		checkTask: _checkTask,
 		inProgressTask: _inProgressTask,
 		uncheckTask: _uncheckTask,
@@ -132,8 +137,19 @@ var Controller = {
 		this.addPlaceHolderDate();
 		View.drawSavedLists();
 	},
-	watch: function(addTask, removeTask, removeBtn, alphabetize, csv, createList, saveList, deleteList, savedList) {
+	watch: function(addTask, removeTask, removeBtn, alphabetize, csv, createList, saveList, deleteList, indentBtns) {
 	   
+	    // indent - unindent
+	    if (indentBtns) {
+	    	for (var i=0, ii = indentBtns.length; i < ii; i++) {
+	    		console.log('^^^');
+	    		addEventHandler(indentBtns[i], 'click', function(evt) {
+					evt.preventDefault();
+					this.indentTask(evt);
+				}.bind(this), false);
+	    	}
+		}
+
 		// save list to local storage
 		if (saveList) {
 			addEventHandler(saveList, 'click', function(evt) {
@@ -191,6 +207,11 @@ var Controller = {
 				this.writeCSV();
 			}.bind(this), false);
 		}
+	},
+	indentTask: function(evt) {
+		console.log('%%%%');
+		// Model.indentTask();
+		View.indentTask(evt);
 	},
 	addPlaceHolderDate: function() { 
 		var d 			= new Date(),
@@ -254,6 +275,10 @@ var Controller = {
 		Model.addTask(taskObj);
 		View.renderAddition(name, num, status);
 	},
+	updateTask: function(count, taskName) {
+		Model.updateTask(count, taskName);
+		View.updateTask(count, taskName);
+	},
 	remove: function() {
 		var taskDIV = document.getElementById('list').lastElementChild;
 		this.counter -= 1;
@@ -281,32 +306,48 @@ var Controller = {
 			    checked = evt.target.checked,
 			    chbx  	= evt.target;
 		}
-		else if (evt.target.tagName === "DIV") {
-			var taskObj 	= evt.target.firstElementChild.getAttribute('data-count'),
-			    checked 	= evt.target.firstElementChild.checked,
-			    chbx  		= evt.target.firstElementChild,
-			    inProgress 	= (evt.target.getAttribute("class") === 'in-progress') ? true : false;
-		}
-		else if (evt.target.tagName === "LABEL") {
-			var taskObj 	= evt.target.previousElementSibling.getAttribute('data-count'),
-			    checked 	= evt.target.previousElementSibling.checked,
-			    chbx  		= evt.target.previousElementSibling,
-			    inProgress 	= (evt.target.parentElement.getAttribute("class") === 'in-progress') ? true : false;
-		}
+		// else if (evt.target.tagName === "DIV") {
+		// 	var taskObj 	= evt.target.firstElementChild.getAttribute('data-count'),
+		// 	    checked 	= evt.target.firstElementChild.checked,
+		// 	    chbx  		= evt.target.firstElementChild,
+		// 	    inProgress 	= (evt.target.getAttribute("class") === 'in-progress') ? true : false;
+		// }
+		// else if (evt.target.tagName === "LABEL") {
+		// 	var taskObj 	= evt.target.previousElementSibling.getAttribute('data-count'),
+		// 	    checked 	= evt.target.previousElementSibling.checked,
+		// 	    chbx  		= evt.target.previousElementSibling,
+		// 	    inProgress 	= (evt.target.parentElement.getAttribute("class") === 'in-progress') ? true : false;
+		// }
+		// else if (evt.target.tagName === "span") {
+		// 	View.selectedTask(evt);
+		// }
 
 		// uncheck chbx || click div when chbx was checked   
-		if ( (!checked && chbxClicked) || (checked && !chbxClicked) ) {
+		if ( (!checked && chbxClicked) /*|| (checked && !chbxClicked)*/ ) {
 			Model.uncheckTask(taskObj);
 			View.incompleted(chbx);
 		}
-		else if (!chbxClicked && !checked && !inProgress) {
-			Model.inProgressTask(taskObj);
-			View.inprogress(chbx);
-		}
+		// else if (!chbxClicked && !checked && !inProgress) {
+		// 	Model.inProgressTask(taskObj);
+		// 	View.inprogress(chbx);
+		// }
 		else {
 			Model.checkTask(taskObj);
 			View.completed(chbx);
 		}	
+	},
+	toggleSelected: function(evt) {
+		var taskDIV = evt.currentTarget.parentElement,
+			taskObj = taskDIV.getAttribute('data-count');
+
+		if (taskDIV.getAttribute('data-selected') === "true") {
+			//Model.inProgressTask(taskObj);
+			View.unselectTask(taskDIV);
+		}
+		else {
+			//Model.inProgressTask();
+			View.selectTask(taskDIV);
+		}
 	},
 	alphabetize: function() {
 		// remove from Model
@@ -387,14 +428,21 @@ var View = {
 	    var list 				= document.getElementById("list"),
 	    	dv   				= document.createElement("div"),
 	    	chbx  				= document.createElement('input'),
-			label 				= document.createElement('label');
+			label 				= document.createElement('input'),
+			radio 				= document.createElement('span');
 	
 			chbx.type 			= "checkbox";
 			chbx.name 			= (Array.isArray(name)) ? name[0] : name;
 			chbx.setAttribute('data-count', num);
-			label.textContent 	= chbx.name;
+
+			label.value		 	= chbx.name;
+			label.type 			= "text";
+
+			radio.setAttribute('class', 'radio');
+
 			dv.appendChild(chbx);
 			dv.appendChild(label);
+			dv.appendChild(radio);
 
 			if (Array.isArray(name) && name[1] !== null) {
 				dv.setAttribute('class', name[1]);
@@ -415,13 +463,20 @@ var View = {
 	    	evt.stopPropagation();
 	    	Controller.toggleChecked(evt);
 		});
-		 addEventHandler(dv, 'click', function(evt) {   // task div
-	    	if (evt.target.tagName !== "INPUT") 
-	    		Controller.toggleChecked(evt); 
+		 addEventHandler(radio, 'click', function(evt) {   // task div
+		 	evt.stopPropagation();
+	    	Controller.toggleSelected(evt); 
+		});
+		 addEventHandler(label, 'keyup', function(evt) { // checkbx
+	    	evt.stopPropagation();
+	    	console.log(num, this.value);
+	    	Controller.updateTask(num, this.value);
 		});
  	},
-	render: function() {
-
+	updateTask: function(num, taskName) {
+		console.log
+		document.querySelectorAll('input[data-count="'+num+'"]')[0].setAttribute('name', taskName);
+		console.log('%%');
 	},
 	removeTask: function(taskDIV) {
 		var parent = taskDIV;
@@ -445,6 +500,36 @@ var View = {
 		chbx.checked = false;
 		chbx.parentElement.removeAttribute("class");
 	},
+	selectTask: function(taskDIV) {
+		taskDIV.setAttribute('data-selected', 'true');
+	},
+	unselectTask: function(taskDIV) {
+		taskDIV.removeAttribute('data-selected');
+	},
+	indentTask: function(evt) {
+		var indent  = evt.currentTarget.getAttribute('data-indent'),
+			taskDIV = document.getElementById('list').lastElementChild;
+
+		if (indent === 'left') {
+			if (taskDIV.getAttribute('data-indent') === 'indentLeftLeft') {
+				return;
+			}
+			else if (taskDIV.getAttribute('data-indent') === 'indentLeft') {
+				taskDIV.setAttribute('data-indent', 'indentLeftLeft');
+			}
+			else {
+				taskDIV.setAttribute('data-indent', 'indentLeft');
+			}
+		}
+		else {
+			if (taskDIV.getAttribute('data-indent') === 'indentLeftLeft') {
+				taskDIV.setAttribute('data-indent', 'indentLeft');
+			}
+			else {
+				taskDIV.removeAttribute('data-indent');
+			}
+		}
+	},
 	writeCSV: function(csvString) {
 
 		var form 		= document.getElementById('input'),
@@ -460,4 +545,4 @@ var View = {
 }
 
 Controller.start();
-Controller.watch(document.getElementById('input'), document.getElementById('removeTask'), document.getElementById('removeBtn'), document.getElementById('alphabetize'), document.getElementById('csv'), document.getElementById('createList'), document.getElementById('saveList'), document.getElementById('removeList'));
+Controller.watch(document.getElementById('input'), document.getElementById('removeTask'), document.getElementById('removeBtn'), document.getElementById('alphabetize'), document.getElementById('csv'), document.getElementById('createList'), document.getElementById('saveList'), document.getElementById('removeList'), document.querySelectorAll('button[data-indent]'));
