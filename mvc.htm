@@ -87,7 +87,7 @@
  	}
  	#list {
  		width: 95%;
- 		margin: 20px 0;
+ 		margin: 5px 0 20px 0;
  		overflow: hidden;
  		counter-reset: section;
  	}
@@ -138,7 +138,7 @@
 		color: #fff;
 		background-color: transparent;
 		border: none;
-		width: 90%;
+		width: 88%;
 		padding-left: 4px;
 		position: relative;
 		top: 1px;
@@ -186,7 +186,7 @@
 		color: #fff;
 		margin: 0 3px 0 0;
 		font-family: 'Merriweather', serif;
-		font-size: 14px;
+		font-size: 13px;
 		margin-bottom: 10px;
 		border: outset 2px #999;
 		display: inline-block;
@@ -328,6 +328,23 @@
   	}
   	#list [data-selected=true] {
   		/*background-color: #ccc;*/
+  		  background-color: rgb(253, 128, 48);
+  	}
+  	#meta {
+  		width: 95%;
+  		margin-top: 10px;
+  		color: #999;
+  		font-size: 11px;
+  		font-weight: 700;
+  		overflow: hidden;
+  		letter-spacing: .5px;
+  	}
+  	#meta span:first-child {
+  		float: left;
+  	}
+  	#meta span + span {
+  		float: right;
+  		margin-right: 2px;
   	}
   	/*#list .completed[data-selected=true] {
   		border-color: #4fd1a1;
@@ -337,7 +354,7 @@
   	}*/
   	.radio {
 		background-color: #fff;
-		width: 24px;
+		width: 20px;
 		height: 100%;
 		display: block;
 		position: absolute;
@@ -345,8 +362,8 @@
 		top: 0px;
 		 box-sizing: border-box;
 		z-index: 100;
-		border-top: 2px solid rgb(236, 233, 223);
-		border-bottom: 2px solid rgb(236, 233, 223);
+		border-top: 6px solid rgb(236, 233, 223);
+		border-bottom: 6px solid rgb(236, 233, 223);
   	}
   	.radio:before {
   		content: "";
@@ -382,8 +399,8 @@
 		<!-- <h1><span class="checkLogo">&#x02713;</span>&nbsp;&nbsp;TaskMaster</h1> -->
 		<h1 id="listName">Vaction Checklist <span>Due August 25, 2016</span></h1>
 		<input type="text" name="add_task_field" autofocus required palceholder="Enter Task">
-		<div class="btnGroup"><button type="submit" id="addTask" class="green"><!-- <span>&plus;</span> --> Add Task</button><button id="removeTask"><!-- <span>&minus;</span> --> Remove Task</button><button id="removeBtn" name="remove"><!-- <span>&minus;</span> --> Remove Completed Tasks</button><button>Mark 'in progress'</button><button data-indent="left">></button><button data-indent="right"><</button><!-- <button id="csv"><span>&dtrif;</span> Format to CSV</button> --><button id="alphabetize" name="alphabetize"><!-- <span>&Alpha;</span>  -->Alphabetize</button></div><!-- // -->
-	
+		<div class="btnGroup"><button type="submit" id="addTask" class="green"><!-- <span>&plus;</span> --> Add Task</button><button id="removeTask"><!-- <span>&minus;</span> --> Remove Task</button><button id="removeBtn" name="remove"><!-- <span>&minus;</span> --> Remove Completed Tasks</button><button id="mark-in-progress">Mark 'in progress'</button><button data-indent="left" title="Left Indent">&rsaquo;</button><button data-indent="right" title="Right Indent">&lsaquo;</button><!-- <button id="csv"><span>&dtrif;</span> Format to CSV</button> --><button id="alphabetize" name="alphabetize"><!-- <span>&Alpha;</span>  -->Alphabetize</button></div><!-- // -->
+		<div id="meta"><span>&check; Completed/Incomplete</span><span>Select &xvee;</span></div>
 		<div id="list">
 			
 		</div>

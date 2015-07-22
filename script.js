@@ -80,6 +80,49 @@ var Model = function() {
 		_model[task_num].status = 'incomplete';
 	}
 
+	function _indentTask(evt) {
+		// know what btn was clicked
+		// if tasks are selected, for each one, update there indentation property
+		// else update indentation property for last obj in Model
+		var indent  			= evt.currentTarget.getAttribute('data-indent'),
+			selectedCollection 	= document.querySelectorAll('#list [data-selected]'),
+			taskDIVisCollection = (selectedCollection.length > 0) ? true : false,
+			taskDIV 			= (taskDIVisCollection) ? selectedCollection : document.getElementById('list').lastElementChild;
+
+		if (taskDIVisCollection) {
+			for(var i =0, ii = taskDIV.length; i < ii; i++) {
+				var task_num = taskDIV[i].firstElementChild.getAttribute('data-count');
+				saveIndentation(task_num, indent);
+			}
+		}
+		else {
+			var task_num = taskDIV.firstElementChild.getAttribute('data-count');
+			saveIndentation(task_num, indent)
+		}
+
+		function saveIndentation(task_num, indent) {
+			if (indent === 'left') {
+				if (_model[task_num].indentation === 'indentLeftLeft') {
+					return;
+				}
+				else if (_model[task_num].indentation === 'indentLeft') {
+					_model[task_num].indentation = 'indentLeftLeft';
+				}
+				else {
+					_model[task_num].indentation = 'indentLeft';
+				}
+			}
+			else {
+				if (_model[task_num].indentation === 'indentLeftLeft') {
+					_model[task_num].indentation = 'indentLeft';
+				}
+				else {
+					_model[task_num].indentation = 'none';
+				}
+			}
+		}
+	}
+
 	function _alphabetize() {
 		keys = Object.keys(model);
 		keys.sort();
@@ -111,6 +154,7 @@ var Model = function() {
 		checkTask: _checkTask,
 		inProgressTask: _inProgressTask,
 		uncheckTask: _uncheckTask,
+		indentTask: _indentTask,
 		getTaskCnt: _getTaskCnt,
 		resetModel: _resetModel,
 		writeCSV: _writeCSV,
@@ -123,10 +167,11 @@ var Model = function() {
 	};
 }();
 
-function Task(name, status) { // Task constructor
+function Task(name, status, indentation) { // Task constructor
 	return {
 		name: name,
-		status: (status) ? status : 'incomplete'
+		status: (status) ? status : 'incomplete',
+		indentation: (indentation) ? indentation : 'none'
 	};
 }
 
@@ -137,8 +182,16 @@ var Controller = {
 		this.addPlaceHolderDate();
 		View.drawSavedLists();
 	},
-	watch: function(addTask, removeTask, removeBtn, alphabetize, csv, createList, saveList, deleteList, indentBtns) {
-	   
+	watch: function(addTask, removeTask, removeBtn, alphabetize, csv, createList, saveList, deleteList, indentBtns, markInProgress) {
+	    
+		// set status 'in-progress'
+	    if (markInProgress) {
+	    	addEventHandler(markInProgress, 'click', function(evt) {
+				evt.preventDefault();
+				this.markInProgress();
+			}.bind(this), false);
+		}
+
 	    // indent - unindent
 	    if (indentBtns) {
 	    	for (var i=0, ii = indentBtns.length; i < ii; i++) {
@@ -208,9 +261,20 @@ var Controller = {
 			}.bind(this), false);
 		}
 	},
+	markInProgress: function() {
+		var selected = document.querySelectorAll('#list [data-selected]');
+
+		for (var i=0, ii = selected.length; i < ii; i++) {
+			var chbx 	= selected[i].firstElementChild,
+				taskObj = chbx.getAttribute('data-count');
+
+			Model.inProgressTask(taskObj);
+			View.inprogress(chbx);
+		}
+	},
 	indentTask: function(evt) {
 		console.log('%%%%');
-		// Model.indentTask();
+		Model.indentTask(evt);
 		View.indentTask(evt);
 	},
 	addPlaceHolderDate: function() { 
@@ -251,12 +315,12 @@ var Controller = {
  			}
 
  			this.counter = 0;
-			if (tasks) {
+			if (tasks) { // if from localStorage
 				for (var member in tasks) {
 					if (tasks.hasOwnProperty(member)) {
 				        Controller.counter = parseInt(member);
 				        console.log("member# " + member);				       
-				        this.addTask(tasks[member].name, member, tasks[member].status);
+				        this.addTask(tasks[member].name, member, tasks[member].status, tasks[member].indentation);
 				    }
 				}
 			}
@@ -265,15 +329,16 @@ var Controller = {
 			View.invalidDate();
 		}
 	},
-	addTask: function(name, num, status) {
+	addTask: function(name, num, status, indentation) {
 		var taskName 	= (Array.isArray(name)) ? name[0] : name,
 			taskStatus 	= (Array.isArray(name) && name[1] !== 'null') ? name[1] : false,
 			taskStatus  = taskStatus || status,
 			taskStatus  = (taskStatus === 'in-progress') ? 'in progress' : taskStatus,
-			taskObj 	= new Task(taskName, taskStatus);
+			indentation = (typeof indentation === 'undefined') ? ((Array.isArray(name) && name[2] !== 'null') ? name[2] : false) : indentation, 
+			taskObj 	= new Task(taskName, taskStatus, indentation);
 
 		Model.addTask(taskObj);
-		View.renderAddition(name, num, status);
+		View.renderAddition(name, num, status, indentation);
 	},
 	updateTask: function(count, taskName) {
 		Model.updateTask(count, taskName);
@@ -361,7 +426,7 @@ var Controller = {
 		    	
 		    	for (i =0, ii =tasks.length; i < ii; i++) {
 
-		    		nameArray.push([tasks[i].name, tasks[i].parentElement.getAttribute('class')]);
+		    		nameArray.push([tasks[i].name, tasks[i].parentElement.getAttribute('class'), tasks[i].parentElement.getAttribute('data-indent')]);
 
 		    	}
 		    	nameArray.sort(function (a, b) {
@@ -424,12 +489,13 @@ var View = {
 		 document.getElementById("createList").setAttribute("class", "hide");
 		 document.getElementById("input").removeAttribute("class", "");
 	},
-	renderAddition: function(name, num, status) {
+	renderAddition: function(name, num, status, indentation) {
 	    var list 				= document.getElementById("list"),
 	    	dv   				= document.createElement("div"),
 	    	chbx  				= document.createElement('input'),
 			label 				= document.createElement('input'),
-			radio 				= document.createElement('span');
+			radio 				= document.createElement('span'),
+			indentation 		= (indentation === 'none') ? false : indentation;
 	
 			chbx.type 			= "checkbox";
 			chbx.name 			= (Array.isArray(name)) ? name[0] : name;
@@ -443,6 +509,8 @@ var View = {
 			dv.appendChild(chbx);
 			dv.appendChild(label);
 			dv.appendChild(radio);
+
+			if (indentation) dv.setAttribute('data-indent', indentation);
 
 			if (Array.isArray(name) && name[1] !== null) {
 				dv.setAttribute('class', name[1]);
@@ -492,9 +560,12 @@ var View = {
 		chbx.parentElement.setAttribute("class", "completed");
 	},
 	inprogress: function(chbx) {
+		var taskDIV = chbx.parentElement;
+
 		chbx.checked = false;
-		chbx.parentElement.removeAttribute("class");
-		chbx.parentElement.setAttribute("class", "in-progress");
+		taskDIV.removeAttribute("class");
+		taskDIV.setAttribute("class", "in-progress");
+		this.unselectTask(taskDIV);
 	},
 	incompleted: function(chbx) {
 		chbx.checked = false;
@@ -507,26 +578,39 @@ var View = {
 		taskDIV.removeAttribute('data-selected');
 	},
 	indentTask: function(evt) {
-		var indent  = evt.currentTarget.getAttribute('data-indent'),
-			taskDIV = document.getElementById('list').lastElementChild;
+		var indent  			= evt.currentTarget.getAttribute('data-indent'),
+			selectedCollection 	= document.querySelectorAll('#list [data-selected]'),
+			taskDIVisCollection = (selectedCollection.length > 0) ? true : false,
+			taskDIV 			= (taskDIVisCollection) ? selectedCollection : document.getElementById('list').lastElementChild;
 
-		if (indent === 'left') {
-			if (taskDIV.getAttribute('data-indent') === 'indentLeftLeft') {
-				return;
-			}
-			else if (taskDIV.getAttribute('data-indent') === 'indentLeft') {
-				taskDIV.setAttribute('data-indent', 'indentLeftLeft');
-			}
-			else {
-				taskDIV.setAttribute('data-indent', 'indentLeft');
+		if (taskDIVisCollection) {
+			for(var i =0, ii = taskDIV.length; i < ii; i++) {
+				drawIndentation(indent, taskDIV[i]);
 			}
 		}
 		else {
-			if (taskDIV.getAttribute('data-indent') === 'indentLeftLeft') {
-				taskDIV.setAttribute('data-indent', 'indentLeft');
+			drawIndentation(indent, taskDIV)
+		}
+
+		function drawIndentation(indent, taskDIV) {
+			if (indent === 'left') {
+				if (taskDIV.getAttribute('data-indent') === 'indentLeftLeft') {
+					return;
+				}
+				else if (taskDIV.getAttribute('data-indent') === 'indentLeft') {
+					taskDIV.setAttribute('data-indent', 'indentLeftLeft');
+				}
+				else {
+					taskDIV.setAttribute('data-indent', 'indentLeft');
+				}
 			}
 			else {
-				taskDIV.removeAttribute('data-indent');
+				if (taskDIV.getAttribute('data-indent') === 'indentLeftLeft') {
+					taskDIV.setAttribute('data-indent', 'indentLeft');
+				}
+				else {
+					taskDIV.removeAttribute('data-indent');
+				}
 			}
 		}
 	},
@@ -545,4 +629,4 @@ var View = {
 }
 
 Controller.start();
-Controller.watch(document.getElementById('input'), document.getElementById('removeTask'), document.getElementById('removeBtn'), document.getElementById('alphabetize'), document.getElementById('csv'), document.getElementById('createList'), document.getElementById('saveList'), document.getElementById('removeList'), document.querySelectorAll('button[data-indent]'));
+Controller.watch(document.getElementById('input'), document.getElementById('removeTask'), document.getElementById('removeBtn'), document.getElementById('alphabetize'), document.getElementById('csv'), document.getElementById('createList'), document.getElementById('saveList'), document.getElementById('removeList'), document.querySelectorAll('button[data-indent]'), document.getElementById('mark-in-progress'));
