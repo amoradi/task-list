@@ -98,7 +98,7 @@
  		text-align: left;
  		margin: 3px 0;
  		line-height: 30px;
-  		padding: 1px 140px 1px 20px;
+  		padding: 1px 140px 1px 15px;
  		font-size: 1.4rem;
  		color: #fff;
  		position: relative;
@@ -122,7 +122,7 @@
 		text-align: right;
  	}
  	#list [type=checkbox] {
- 		margin: 0 15px 0 0;
+ 		margin: 0 10px 0 0;
  		height: 40px;
 		width: 30px;
 		display: inline-block;
@@ -188,7 +188,7 @@
 		font-family: 'Merriweather', serif;
 		font-size: 13px;
 		margin-bottom: 10px;
-		border: outset 2px #999;
+		border: outset 5px #999;
 		display: inline-block;
   		vertical-align: middle;
   		text-align: left;
@@ -226,7 +226,7 @@
   	}
   	.green {
   		background: rgb(167, 196, 81);
-  		border: outset 2px rgb(167, 196, 81);
+  		border: outset 5px rgb(167, 196, 81);
   	}
   	.blue {
 
@@ -234,6 +234,7 @@
   	.btnGroup {
   		display: inline-block;
  		vertical-align: middle;
+  		width: 95%;
   	}
   	.csvTextarea {
 		display: block;
@@ -332,7 +333,7 @@
   	}
   	#meta {
   		width: 95%;
-  		margin-top: 10px;
+  		margin-top: 40px;
   		color: #999;
   		font-size: 11px;
   		font-weight: 700;
@@ -379,6 +380,47 @@
   	[data-selected] .radio {
   		background: rgb(254, 101, 4);
   	}
+  	#mark-in-progress {
+  		background-color: #53AACB;
+  		border-color: #53AACB;
+  	}
+  	#mark-incomplete {
+  		background-color: #df4b48;
+  		border-color: #df4b48;
+  	}
+  	#mark-completed {
+  		background-color: #4fd1a1;
+  		border-color: #4fd1a1;
+  	}
+   	.btmListControls {
+  		padding: 10px;
+  		background-color: #D8D4C8;
+  		width: 95%;
+  	}
+  	.statusBtns {
+  		float: right;
+  	}
+  	
+  	.indentBtns button, .statusBtns button {
+  		border-width: 3px;
+		line-height: 20px;
+		font-size: 11px;
+		margin-bottom: 0;
+  	}
+  	.indentBtns span, .statusBtns span {
+  		display: block;
+  		color: #999;
+  		font-size: 11px;
+  		font-weight: 700;
+  		overflow: hidden;
+  		letter-spacing: .5px;
+  	}
+  	.statusBtns span {
+  		text-align: right;
+  	}
+  	.orange {
+  		color: rgb(254, 101, 4);
+  	}
   </style>
   <!--[if lt IE 9]>
   <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -398,13 +440,29 @@
 	<form id="input" class="hide">
 		<!-- <h1><span class="checkLogo">&#x02713;</span>&nbsp;&nbsp;TaskMaster</h1> -->
 		<h1 id="listName">Vaction Checklist <span>Due August 25, 2016</span></h1>
-		<input type="text" name="add_task_field" autofocus required palceholder="Enter Task">
-		<div class="btnGroup"><button type="submit" id="addTask" class="green"><!-- <span>&plus;</span> --> Add Task</button><button id="removeTask"><!-- <span>&minus;</span> --> Remove Task</button><button id="removeBtn" name="remove"><!-- <span>&minus;</span> --> Remove Completed Tasks</button><button id="mark-in-progress">Mark 'in progress'</button><button data-indent="left" title="Left Indent">&rsaquo;</button><button data-indent="right" title="Right Indent">&lsaquo;</button><!-- <button id="csv"><span>&dtrif;</span> Format to CSV</button> --><button id="alphabetize" name="alphabetize"><!-- <span>&Alpha;</span>  -->Alphabetize</button></div><!-- // -->
+		
+		<div class="btnGroup"><input type="text" name="add_task_field" autofocus required placeholder="Enter Task"><button type="submit" id="addTask" class="green">Add Task</button><button id="removeTask">Remove Task(s)</button><button id="removeBtn" name="remove">Remove Completed Task(s)</button>
+			
+
+		</div>
+
 		<div id="meta"><span>&check; Completed/Incomplete</span><span>Select &xvee;</span></div>
 		<div id="list">
 			
 		</div>
-			<button id="saveList" class="green">Save List</button><button>Create New List</button><button id="removeList" class="">Delete List</button><!-- // -->
+		<div class="btmListControls">
+			<div class="statusBtns">
+				<!-- <span>Mark</span> -->
+				<button id="mark-incomplete">incomplete</button>
+				<button id="mark-in-progress">in progress</button>
+				<button id="mark-completed">completed</button>
+			</div>
+			<div class="indentBtns">
+				<!-- <span>Indent</span> -->
+				<button data-indent="left" title="Left Indent">&rsaquo;</button><button class="alphaIndentBtns" data-indent="right" title="Right Indent">&lsaquo;</button><button id="alphabetize" name="alphabetize">Alphabetize</button>
+			</div>
+		</div>
+			<button id="saveList" class="green">Save List</button><button id="removeList" class="">Delete List</button><button>Create New List</button><!-- // -->
 	</form>
 	<div class="sidebar"></div>
 	<script src="script.js"></script>

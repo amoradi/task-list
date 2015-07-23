@@ -344,24 +344,47 @@ var Controller = {
 		Model.updateTask(count, taskName);
 		View.updateTask(count, taskName);
 	},
-	remove: function() {
-		var taskDIV = document.getElementById('list').lastElementChild;
-		this.counter -= 1;
+	remove: function(evt) {
+		var	selectedCollection	= document.querySelectorAll('#list [data-selected]'),
+			taskDIVisCollection = (selectedCollection.length > 0) ? true : false, 
+			taskDIV 			= (taskDIVisCollection) ? selectedCollection : document.getElementById('list').lastElementChild;
+		
+			// remove selected tasks
+			if (taskDIVisCollection) { 
+				for (var i =0, ii = taskDIV.length; i < ii; i++) {
+					this.counter -= 1;
 
-		Model.removeTask(taskDIV.firstElementChild.getAttribute('data-count'));
-		View.removeTask(taskDIV);
+					//Model.removeTask(taskDIV[i].firstElementChild.getAttribute('data-count'));
+					//Model.updateCounts();
+
+					View.removeTask(taskDIV[i]);
+					//View.updateCounts();
+				}
+			}
+			// remove last task
+			else { 
+				this.counter -= 1;
+
+				//Model.removeTask(taskDIV.firstElementChild.getAttribute('data-count'));
+				View.removeTask(taskDIV);
+				//View.updateCounts();
+			}
+
+			this.redraw(false);
 	},
 	removeCompleted: function() {
 		// for each key in model, if has checked value true, delete from object
 		var checkedB = document.querySelectorAll('#list [type=checkbox]');
 		for (var i = 0, ii = checkedB.length; i < ii; i++) {
 			if (checkedB[i].checked) {
-				Model.removeTask(checkedB[i].getAttribute('data-count')); // Model
+				//Model.removeTask(checkedB[i].getAttribute('data-count')); // Model
 
 				var taskDIV = checkedB[i].parentNode; // View
 				View.removeTask(taskDIV); 
 			}
-		}			
+		}
+
+		this.redraw(false);			
 	},
 	toggleChecked: function(evt) {
 		var chbxClicked = evt.target.tagName === "INPUT";
@@ -415,6 +438,9 @@ var Controller = {
 		}
 	},
 	alphabetize: function() {
+		this.redraw(true);
+	},
+	redraw: function(alphabetize) {
 		// remove from Model
 		Model.resetModel();
 		
@@ -425,13 +451,14 @@ var Controller = {
 		    	var nameArray = [];
 		    	
 		    	for (i =0, ii =tasks.length; i < ii; i++) {
-
 		    		nameArray.push([tasks[i].name, tasks[i].parentElement.getAttribute('class'), tasks[i].parentElement.getAttribute('data-indent')]);
-
 		    	}
-		    	nameArray.sort(function (a, b) {
-				    return a[0].toLowerCase().localeCompare(b[0].toLowerCase());
-				});
+
+		    	if (alphabetize) {
+			    	nameArray.sort(function (a, b) {
+					    return a[0].toLowerCase().localeCompare(b[0].toLowerCase());
+					});
+			    }
 		    }
 
 		//  remove unalphabetized list from View
@@ -503,6 +530,7 @@ var View = {
 
 			label.value		 	= chbx.name;
 			label.type 			= "text";
+			label.title 		= "Edit Task";
 
 			radio.setAttribute('class', 'radio');
 
@@ -546,13 +574,23 @@ var View = {
 		document.querySelectorAll('input[data-count="'+num+'"]')[0].setAttribute('name', taskName);
 		console.log('%%');
 	},
+	updateCounts: function() {
+		var tasks = document.querySelectorAll('#list input[data-count]');
+
+		for (var i =0, ii = tasks.length; i < ii; i++) {
+			tasks[i].setAttribute('data-count', i+1);
+		}
+	},
 	removeTask: function(taskDIV) {
 		var parent = taskDIV;
-
-		while (parent.firstChild) {
+		
+		while (parent !== null && parent.firstChild) {
 		    parent.removeChild(parent.firstChild);
 		}
-		parent.remove();
+		
+		if (parent !== null) parent.remove();
+
+		this.checkSelectNumber();
 	},
 	completed: function(chbx) {
 		chbx.checked = true;
@@ -573,9 +611,16 @@ var View = {
 	},
 	selectTask: function(taskDIV) {
 		taskDIV.setAttribute('data-selected', 'true');
+		document.querySelectorAll('#meta span + span')[0].setAttribute('class', 'orange');
 	},
 	unselectTask: function(taskDIV) {
 		taskDIV.removeAttribute('data-selected');
+		this.checkSelectNumber();
+	},
+	checkSelectNumber: function() {
+		if (document.querySelectorAll('[data-selected]').length < 1) {
+			document.querySelectorAll('#meta span + span')[0].removeAttribute('class');
+		}
 	},
 	indentTask: function(evt) {
 		var indent  			= evt.currentTarget.getAttribute('data-indent'),
