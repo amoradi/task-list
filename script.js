@@ -182,8 +182,36 @@ var Controller = {
 		this.addPlaceHolderDate();
 		View.drawSavedLists();
 	},
-	watch: function(addTask, removeTask, removeBtn, alphabetize, csv, createList, saveList, deleteList, indentBtns, markInProgress) {
+	watch: function(
+		addTask,
+		removeTask,
+		removeBtn,
+		alphabetize,
+		csv,
+		createList,
+		saveList,
+		deleteList,
+		indentBtns,
+		markInProgress,
+		selectAll,
+		createNewList) {
 	    
+	    // click create new list btn
+	    if (createNewList) {
+	    	addEventHandler(createNewList, 'click', function(evt) {
+				evt.preventDefault();
+				View.hideCreateNewList(false);
+			}.bind(this), false);
+	    }
+
+	    // click select / deselect
+		if (selectAll) {
+			addEventHandler(selectAll, 'click', function(evt) {
+				evt.preventDefault();
+				this.toggleSelect();
+			}.bind(this), false);
+		}
+
 		// set status 'in-progress'
 	    if (markInProgress) {
 	    	addEventHandler(markInProgress, 'click', function(evt) {
@@ -261,6 +289,10 @@ var Controller = {
 			}.bind(this), false);
 		}
 	},
+	toggleSelect: function() {
+		var select = (document.querySelectorAll('#meta span + span')[0].getAttribute('class') === "orange") ? false : true;
+		View.toggleSelect(select);
+	},
 	markInProgress: function() {
 		var selected = document.querySelectorAll('#list [data-selected]');
 
@@ -304,6 +336,7 @@ var Controller = {
 
 		var dueDate = dueDate.split('/');
 		
+		// if data is valid
 		if (this.validateDate(dueDate[2], dueDate[0], dueDate[1])) {
 			Model.setName(listName);
 			Model.setDate(dueDate.join('/'));
@@ -328,6 +361,7 @@ var Controller = {
 		else {
 			View.invalidDate();
 		}
+		View.checkSelectNumber();
 	},
 	addTask: function(name, num, status, indentation) {
 		var taskName 	= (Array.isArray(name)) ? name[0] : name,
@@ -461,7 +495,7 @@ var Controller = {
 			    }
 		    }
 
-		//  remove unalphabetized list from View
+		// remove unalphabetized list from View
 		while (list.firstChild) {
 		   list.removeChild(list.firstChild);
 		}
@@ -477,6 +511,9 @@ var Controller = {
 
 // View
 var View = {
+	resetCreateListForm: function() {
+		document.getElementById('createList').reset();
+	},
 	drawSavedLists: function(clickedSave) {
 		console.log(clickedSave);
 		if (typeof clickedSave !== "undefined" && clickedSave) { 
@@ -513,8 +550,20 @@ var View = {
 			 dueDate = new Date(dueDate.join('/'));
 		 
 		 h1.innerHTML = listName + "<span>Due on <strong>" + dueDate.toDateString() + "</strong></span>";
-		 document.getElementById("createList").setAttribute("class", "hide");
-		 document.getElementById("input").removeAttribute("class", "");
+		 
+		 this.hideCreateNewList(true);
+	},
+	hideCreateNewList: function(hideCreateNewList) {
+		if (hideCreateNewList) {
+			document.getElementById("createList").setAttribute("class", "hide");
+			document.getElementById("input").removeAttribute("class", "");
+			this.resetCreateListForm();
+		}
+		else {
+			this.resetCreateListForm();
+			document.getElementById("createList").removeAttribute("class", "");
+			document.getElementById("input").setAttribute("class", "hide");
+		}
 	},
 	renderAddition: function(name, num, status, indentation) {
 	    var list 				= document.getElementById("list"),
@@ -610,16 +659,32 @@ var View = {
 		chbx.parentElement.removeAttribute("class");
 	},
 	selectTask: function(taskDIV) {
+		var selectText = document.querySelectorAll('#meta span + span')[0];
 		taskDIV.setAttribute('data-selected', 'true');
-		document.querySelectorAll('#meta span + span')[0].setAttribute('class', 'orange');
+		selectText.setAttribute('class', 'orange');
+		selectText.innerHTML = 'Deselect &xvee;';
 	},
 	unselectTask: function(taskDIV) {
 		taskDIV.removeAttribute('data-selected');
 		this.checkSelectNumber();
 	},
+	toggleSelect: function(select) {
+		var tasks = document.querySelectorAll('#list > div');
+		for (var i =0, ii = tasks.length; i < ii; i++) {
+			if (select) { // select all unselected
+				this.selectTask(tasks[i]);
+			}
+			else { // unselect all selected
+				if (tasks[i].getAttribute('data-selected') === "true") {
+					this.unselectTask(tasks[i]);
+				}
+			}
+		}
+	},
 	checkSelectNumber: function() {
 		if (document.querySelectorAll('[data-selected]').length < 1) {
 			document.querySelectorAll('#meta span + span')[0].removeAttribute('class');
+			document.querySelectorAll('#meta span + span')[0].innerHTML = 'Select &xvee;';
 		}
 	},
 	indentTask: function(evt) {
@@ -674,4 +739,17 @@ var View = {
 }
 
 Controller.start();
-Controller.watch(document.getElementById('input'), document.getElementById('removeTask'), document.getElementById('removeBtn'), document.getElementById('alphabetize'), document.getElementById('csv'), document.getElementById('createList'), document.getElementById('saveList'), document.getElementById('removeList'), document.querySelectorAll('button[data-indent]'), document.getElementById('mark-in-progress'));
+Controller.watch(
+	document.getElementById('input'),
+	document.getElementById('removeTask'),
+	document.getElementById('removeBtn'),
+	document.getElementById('alphabetize'), 
+	document.getElementById('csv'), 
+	document.getElementById('createList'), 
+	document.getElementById('saveList'), 
+	document.getElementById('removeList'), 
+	document.querySelectorAll('button[data-indent]'),
+	document.getElementById('mark-in-progress'),
+	document.getElementById('select'),
+	document.getElementById('createNewList')
+	);

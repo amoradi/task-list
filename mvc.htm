@@ -23,7 +23,6 @@
  		padding-bottom: 100px;
  		overflow: hidden;
  		min-width: 960px;
- 		
  	}
  	header h1 {
  		/*padding: 12px 10px;*/
@@ -75,6 +74,11 @@
  		width: 70%;
   		margin: 0 0 0 4%;
   		float: left;
+
+  		-webkit-transition: all 200ms ease;
+	    -moz-transition: all 200ms ease;
+	    -o-transition: all 200ms ease;
+	    transition: all 200ms ease;
  	}
  	header {
  		width: 100%;
@@ -87,7 +91,7 @@
  	}
  	#list {
  		width: 95%;
- 		margin: 5px 0 20px 0;
+ 		margin: 5px 0;
  		overflow: hidden;
  		counter-reset: section;
  	}
@@ -152,6 +156,9 @@
  	}
  	#list .completed {
  		background: #4fd1a1;
+ 		text-decoration: line-through;
+ 	}
+ 	#list .completed [type="text"] {
  		text-decoration: line-through;
  	}
  	
@@ -346,6 +353,7 @@
   	#meta span + span {
   		float: right;
   		margin-right: 2px;
+  		cursor: pointer;
   	}
   	/*#list .completed[data-selected=true] {
   		border-color: #4fd1a1;
@@ -393,9 +401,8 @@
   		border-color: #4fd1a1;
   	}
    	.btmListControls {
-  		padding: 10px;
-  		background-color: #D8D4C8;
   		width: 95%;
+  		margin-bottom: 60px;
   	}
   	.statusBtns {
   		float: right;
@@ -446,7 +453,7 @@
 
 		</div>
 
-		<div id="meta"><span>&check; Completed/Incomplete</span><span>Select &xvee;</span></div>
+		<div id="meta"><span>&check; Completed/Incomplete</span><span id="select">Select &xvee;</span></div>
 		<div id="list">
 			
 		</div>
@@ -462,7 +469,7 @@
 				<button data-indent="left" title="Left Indent">&rsaquo;</button><button class="alphaIndentBtns" data-indent="right" title="Right Indent">&lsaquo;</button><button id="alphabetize" name="alphabetize">Alphabetize</button>
 			</div>
 		</div>
-			<button id="saveList" class="green">Save List</button><button id="removeList" class="">Delete List</button><button>Create New List</button><!-- // -->
+			<button id="saveList" class="green">Save List</button><button id="removeList" class="">Delete List</button><button class="green" id="createNewList">Create New List</button><!-- // -->
 	</form>
 	<div class="sidebar"></div>
 	<script src="script.js"></script>
