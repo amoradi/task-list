@@ -72,8 +72,8 @@ var Model = function() {
 		_model[task_num].status = 'completed';
 	}
 
-	function _inProgressTask(task_num) {
-		_model[task_num].status = 'in progress';
+	function _updateStatus(task_num, status) {
+		_model[task_num].status = status;
 	}
 
 	function _uncheckTask(task_num) {
@@ -152,7 +152,7 @@ var Model = function() {
 		removeTask: _removeTask,
 		updateTask: _updateTask,
 		checkTask: _checkTask,
-		inProgressTask: _inProgressTask,
+		updateStatus: _updateStatus,
 		uncheckTask: _uncheckTask,
 		indentTask: _indentTask,
 		getTaskCnt: _getTaskCnt,
@@ -194,12 +194,31 @@ var Controller = {
 		indentBtns,
 		markInProgress,
 		selectAll,
-		createNewList) {
+		createNewList,
+		markIncomplete,
+		markCompleted) {
 	    
+	    // click mark completed
+	    if (markCompleted) {
+	    	addEventHandler(markCompleted, 'click', function(evt) {
+				evt.preventDefault();
+				this.updateStatus("completed");
+			}.bind(this), false);
+	    }
+
+	    // click mark incomplete
+	    if (markIncomplete) {
+	    	addEventHandler(markIncomplete, 'click', function(evt) {
+				evt.preventDefault();
+				this.updateStatus("incomplete");
+			}.bind(this), false);
+	    }
+
 	    // click create new list btn
 	    if (createNewList) {
 	    	addEventHandler(createNewList, 'click', function(evt) {
 				evt.preventDefault();
+				View.markListasSaved(false);
 				View.hideCreateNewList(false);
 			}.bind(this), false);
 	    }
@@ -216,7 +235,7 @@ var Controller = {
 	    if (markInProgress) {
 	    	addEventHandler(markInProgress, 'click', function(evt) {
 				evt.preventDefault();
-				this.markInProgress();
+				this.updateStatus("in progress");
 			}.bind(this), false);
 		}
 
@@ -236,6 +255,14 @@ var Controller = {
 			addEventHandler(saveList, 'click', function(evt) {
 				evt.preventDefault();
 				this.saveList();
+			}.bind(this), false);
+		}
+
+		// delete list to local storage
+		if (deleteList) {
+			addEventHandler(deleteList, 'click', function(evt) {
+				evt.preventDefault();
+				this.deleteList();
 			}.bind(this), false);
 		}
 
@@ -293,15 +320,15 @@ var Controller = {
 		var select = (document.querySelectorAll('#meta span + span')[0].getAttribute('class') === "orange") ? false : true;
 		View.toggleSelect(select);
 	},
-	markInProgress: function() {
+	updateStatus: function(status) {
 		var selected = document.querySelectorAll('#list [data-selected]');
 
 		for (var i=0, ii = selected.length; i < ii; i++) {
 			var chbx 	= selected[i].firstElementChild,
 				taskObj = chbx.getAttribute('data-count');
 
-			Model.inProgressTask(taskObj);
-			View.inprogress(chbx);
+			Model.updateStatus(taskObj, status);
+			View.updateStatus(chbx, status);
 		}
 	},
 	indentTask: function(evt) {
@@ -328,7 +355,12 @@ var Controller = {
 	saveList: function() {
 		Model.saveToLocalStorage();
 		var x = true;
+		View.markListasSaved(true);
 		View.drawSavedLists(x);
+	},
+	deleteList: function() {
+		View.deleteList();
+		View.markListasSaved(false);
 	},
 	createList: function(listName, dueDate, tasks) {
 		// remove from Model
@@ -336,7 +368,7 @@ var Controller = {
 
 		var dueDate = dueDate.split('/');
 		
-		// if data is valid
+		// if date is valid
 		if (this.validateDate(dueDate[2], dueDate[0], dueDate[1])) {
 			Model.setName(listName);
 			Model.setDate(dueDate.join('/'));
@@ -361,6 +393,7 @@ var Controller = {
 		else {
 			View.invalidDate();
 		}
+		View.markListasSaved(false);
 		View.checkSelectNumber();
 	},
 	addTask: function(name, num, status, indentation) {
@@ -514,6 +547,16 @@ var View = {
 	resetCreateListForm: function() {
 		document.getElementById('createList').reset();
 	},
+	markListasSaved: function(saved) {
+		var listName = document.getElementById('listName');
+
+		if (saved) {
+			listName.setAttribute('data-saved', 'true');
+		}
+		else {
+			listName.removeAttribute('data-saved');
+		}
+	},
 	drawSavedLists: function(clickedSave) {
 		console.log(clickedSave);
 		if (typeof clickedSave !== "undefined" && clickedSave) { 
@@ -542,7 +585,42 @@ var View = {
 					tasks     = tasks[1];
 
 				Controller.createList(listName, dueDate, tasks);
+				View.markListasSaved(true);
 			});
+		}
+	},
+	deleteList: function() {
+		if (confirm("Are you sure you want to delete this list?")) {
+			var listName 		= document.getElementById('listName'),
+				listNameText 	= listName.childNodes[0].nodeValue,
+				listIsSaved     = (listName.getAttribute('data-saved') === "true") ? true : false,
+				localStorageKey = "taskMaster." + listNameText;
+				regExKey 		= new RegExp(localStorageKey, 'g');
+
+			// if list is saved, delete from local storage
+			if (listIsSaved) {
+				for (var i =0, ii = localStorage.length; i < ii; i++) {
+					if (regExKey.test(localStorage.key(i))) {
+						console.log("removed " + localStorageKey);
+						localStorage.removeItem(localStorageKey);
+					}
+				}
+			}
+
+			// update saved lists column
+			this.drawSavedLists();
+			// delete from View
+			var tasks = document.querySelectorAll('#list > div');
+			for (var i =0, ii = tasks.length; i < ii; i++) {
+				this.removeTask(tasks[i])
+			}
+			// delete from Model
+			Model.resetModel();
+			// go to create new list view
+			this.hideCreateNewList(false);
+		}
+		else {
+			return;
 		}
 	},
 	addList: function(listName, dueDate) {
@@ -646,12 +724,18 @@ var View = {
 		chbx.parentElement.removeAttribute("class");
 		chbx.parentElement.setAttribute("class", "completed");
 	},
-	inprogress: function(chbx) {
-		var taskDIV = chbx.parentElement;
+	updateStatus: function(chbx, status) {
+		var taskDIV = chbx.parentElement,
+			status  = (status === "in progress") ? "in-progress" : status;
 
-		chbx.checked = false;
+		if (status === 'completed') { // check if completed
+			chbx.checked = true;
+		}
+		else {
+			chbx.checked = false;
+		}
 		taskDIV.removeAttribute("class");
-		taskDIV.setAttribute("class", "in-progress");
+		taskDIV.setAttribute("class", status);
 		this.unselectTask(taskDIV);
 	},
 	incompleted: function(chbx) {
@@ -751,5 +835,7 @@ Controller.watch(
 	document.querySelectorAll('button[data-indent]'),
 	document.getElementById('mark-in-progress'),
 	document.getElementById('select'),
-	document.getElementById('createNewList')
-	);
+	document.getElementById('createNewList'),
+	document.getElementById('mark-incomplete'),
+	document.getElementById('mark-completed')
+);
