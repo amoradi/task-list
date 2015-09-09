@@ -11,7 +11,7 @@ Element.prototype.remove = function() {
     this.parentElement.removeChild(this);
 }
 
-// Model
+// Model // +
 var Model = function() {
 	
 	var _model 	= {},
@@ -660,7 +660,9 @@ var View = {
 			label.title 		= "Edit Task";
 
 			radio.setAttribute('class', 'radio');
-
+			dv.setAttribute('draggable','true');
+			dv.setAttribute('ondragstart','drag(event)');
+			dv.setAttribute('id', Controller.counter);
 			dv.appendChild(chbx);
 			dv.appendChild(label);
 			dv.appendChild(radio);
@@ -822,7 +824,7 @@ var View = {
 	}
 }
 
-Controller.start();
+Controller.start(); // +
 Controller.watch(
 	document.getElementById('input'),
 	document.getElementById('removeTask'),
@@ -838,4 +840,26 @@ Controller.watch(
 	document.getElementById('createNewList'),
 	document.getElementById('mark-incomplete'),
 	document.getElementById('mark-completed')
-);
+); // +
+
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+function drop(ev) {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+
+    // find the y coordinate where dropped
+    // find the list item (if there is one) where the y coordinate exists
+    // append the drag el next to list item
+    
+    //The Node.insertBefore() method inserts the specified node before a reference node as a child of the current node.
+	//var insertedNode = parentNode.insertBefore(newNode, referenceNode);	
+    
+    ev.target.appendChild(document.getElementById(data));
+}
+
+function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+}
