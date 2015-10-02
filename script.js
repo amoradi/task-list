@@ -1,6 +1,6 @@
 // *** QUERYSELECTORALL - WONT WORK IN IE8 ***
 
-// cross-browser compatability evt listener fn (<IE8)
+// cross-browser compatability evt listener fn (<IE8) 
 function addEventHandler(elem,eventType,handler) {
  if (elem.addEventListener)
      elem.addEventListener(eventType,handler,false);
@@ -822,7 +822,7 @@ var View = {
 			textarea.setAttribute('class', 'csvTextarea');
 		form.appendChild(textarea);
 	}
-}
+};
 
 Controller.start(); // +
 Controller.watch(
