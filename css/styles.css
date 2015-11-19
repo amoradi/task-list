@@ -1,441 +1,441 @@
 html {
-       overflow-y: scroll;
-       min-width: 960px;
-	}
- 	body {
- 		text-align: left;
- 		font-size: 62.5%;
- 		color: #111;
- 		background: #ECE9DF;
- 		font-family: 'Merriweather', serif;
- 		padding: 0;
- 		margin: 0;
- 		padding-bottom: 100px;
- 		overflow: hidden;
- 		min-width: 960px;
- 	}
- 	header h1 {
- 		color: #999;
- 		letter-spacing: 1px;
- 		font-size: 15px;
- 	}
- 	.checkLogo {
- 		display: none;
-		padding: 2px 7px;
-		background-color: #fff;
-		font-size: 14px;
-		position: relative;
-		top: -3px;
-		-webkit-border-radius: 3px;
-		-moz-border-radius: 3px;
-		border-radius: 3px;
-		letter-spacing: 0px;
- 	}
- 	form {
-		visibility:visible;
-		opacity:1;
-		-webkit-transition: all 200ms ease;
-    -moz-transition: all 200ms ease;
-    -o-transition: all 200ms ease;
-    transition: all 200ms ease;
- 	}
- 	#listName, #createList h1 {
- 		font-size: 2.4rem;
- 		margin-top: 0;
- 		padding-left: 4px;
-		margin-top: 0;
-		margin-bottom: 45px;
-		width: 95%;
-		font-weight: 900;
-		box-sizing: border-box;
-		-moz-box-sizing: border-box;
- 	}
- 	#listName span, #createList h1 span {
- 		font-weight: 300;
- 		display: block;
- 		font-size: 14px;
-  		padding-top: 4px;
- 	}
- 	#input, header, #createList {
- 		width: 70%;
-		margin: 0 0 0 4%;
-		float: left;
+   overflow-y: scroll;
+   min-width: 960px;
+}
+body {
+	text-align: left;
+	font-size: 62.5%;
+	color: #111;
+	background: #ECE9DF;
+	font-family: 'Merriweather', serif;
+	padding: 0;
+	margin: 0;
+	padding-bottom: 100px;
+	overflow: hidden;
+	min-width: 960px;
+}
+header h1 {
+	color: #999;
+	letter-spacing: 1px;
+	font-size: 15px;
+}
+.checkLogo {
+	display: none;
+padding: 2px 7px;
+background-color: #fff;
+font-size: 14px;
+position: relative;
+top: -3px;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+letter-spacing: 0px;
+}
+form {
+visibility:visible;
+opacity:1;
+-webkit-transition: all 200ms ease;
+-moz-transition: all 200ms ease;
+-o-transition: all 200ms ease;
+transition: all 200ms ease;
+}
+#listName, #createList h1 {
+	font-size: 2.4rem;
+	margin-top: 0;
+	padding-left: 4px;
+margin-top: 0;
+margin-bottom: 45px;
+width: 95%;
+font-weight: 900;
+box-sizing: border-box;
+-moz-box-sizing: border-box;
+}
+#listName span, #createList h1 span {
+	font-weight: 300;
+	display: block;
+	font-size: 14px;
+	padding-top: 4px;
+}
+#input, header, #createList {
+	width: 70%;
+margin: 0 0 0 4%;
+float: left;
 
-		-webkit-transition: all 200ms ease;
-    -moz-transition: all 200ms ease;
-    -o-transition: all 200ms ease;
-    transition: all 200ms ease;
- 	}
+-webkit-transition: all 200ms ease;
+-moz-transition: all 200ms ease;
+-o-transition: all 200ms ease;
+transition: all 200ms ease;
+}
 
- 	#createList > * {
- 		display: block;
- 	}
- 	#createList input {
- 		width: 70%;
- 	}
+#createList > * {
+	display: block;
+}
+#createList input {
+	width: 70%;
+}
 
- 	#createList button {
- 		margin-top: 40px;
- 	}
+#createList button {
+	margin-top: 40px;
+}
 
- 	header {
- 		width: 100%;
- 		margin: 0;
- 		padding: 5px 20px 5px 4%;
- 		background: #fff;
- 		margin-bottom: 45px;
- 		box-sizing: border-box;
- 		-moz-box-sizing: border-box;
- 	}
- 	#list {
- 		width: 95%;
- 		margin: 5px 0;
- 		overflow: hidden;
- 		counter-reset: section;
- 	}
+header {
+	width: 100%;
+	margin: 0;
+	padding: 5px 20px 5px 4%;
+	background: #fff;
+	margin-bottom: 45px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+#list {
+	width: 95%;
+	margin: 5px 0;
+	overflow: hidden;
+	counter-reset: section;
+}
 
- 	#list div {
- 		cursor: pointer;
- 		overflow-y: auto;
- 		text-align: left;
- 		margin: 3px 0;
- 		line-height: 30px;
-  	padding: 1px 140px 1px 15px;
- 		font-size: 1.4rem;
- 		color: #fff;
- 		position: relative;
- 		background: #df4b48;
-		counter-increment: section;
- 	}
- 	#list div:before {
- 		content: counter(section);
- 		position: absolute;
-		right: 165px;
-		z-index: 99;
-		font-size: 12px;
-		color: #fff;
-		top: 6px;
-		opacity: .5;
-		text-align: right;
- 	}
- 	#list [type=checkbox] {
- 		margin: 0 10px 0 0;
- 		height: 40px;
-		width: 30px;
-		display: inline-block;
-		vertical-align: middle;
-		opacity: .3;
-		filter: alpha(opacity=30);
- 	}
- 	#list label {
- 		cursor: pointer;
- 		word-wrap: break-word;
- 	}
- 	#list input[type=text] {
-		color: #fff;
-		background-color: transparent;
-		border: none;
-		width: 88%;
-		padding-left: 4px;
-		position: relative;
-		top: 1px;
-		font-size: 1.1rem;
-		font-family: 'Merriweather', serif;
- 	}
- 	#list input[type=text]:focus {
- 		border: none;
- 		outline: none;
+#list div {
+	cursor: pointer;
+	overflow-y: auto;
+	text-align: left;
+	margin: 3px 0;
+	line-height: 30px;
+padding: 1px 140px 1px 15px;
+	font-size: 1.4rem;
+	color: #fff;
+	position: relative;
+	background: #df4b48;
+counter-increment: section;
+}
+#list div:before {
+	content: counter(section);
+	position: absolute;
+right: 165px;
+z-index: 99;
+font-size: 12px;
+color: #fff;
+top: 6px;
+opacity: .5;
+text-align: right;
+}
+#list [type=checkbox] {
+	margin: 0 10px 0 0;
+	height: 40px;
+width: 30px;
+display: inline-block;
+vertical-align: middle;
+opacity: .3;
+filter: alpha(opacity=30);
+}
+#list label {
+	cursor: pointer;
+	word-wrap: break-word;
+}
+#list input[type=text] {
+color: #fff;
+background-color: transparent;
+border: none;
+width: 88%;
+padding-left: 4px;
+position: relative;
+top: 1px;
+font-size: 1.1rem;
+font-family: 'Merriweather', serif;
+}
+#list input[type=text]:focus {
+	border: none;
+	outline: none;
 
- 	}
- 	#list .completed {
- 		background: #4fd1a1;
- 		text-decoration: line-through;
- 	}
- 	#list .completed [type="text"] {
- 		text-decoration: line-through;
- 	}
- 	
- 	#list .in-progress {
- 		background: #53AACB;
- 	}
- 	#list .completed:after, #list .in-progress:after, #list div:after {
- 		content: "completed";
-		color: #fff;
-		display: block;
-		position: absolute;
-		right: 35px;
-		bottom: 10%;
-		font-size: 14px;
-		background-color: rgba(255,255,255,.2);
-		padding: 2px 10px;
-		width: 100px;
-		text-align: center;
- 	}
- 	#list div:after {
- 		content: "incomplete";
- 	}
- 	#list .in-progress:after {
- 		content: "in progress";
- 	}
- 	button {
- 		cursor: pointer;
-		background: #999;
-		border: none;
-		padding: 0px 20px; 
-		height: 55px;
-		color: #fff;
-		margin: 0 3px 0 0;
-		font-family: sans-serif;
-		font-size: 11px;
-		margin-bottom: 10px;
-		border: outset 5px #999;
-		display: inline-block;
-  		vertical-align: middle;
-  		text-align: left;
-  		text-transform: uppercase;
-    	letter-spacing: 1px;
- 	}
- 	
- 	button:focus {
- 		outline: none;
- 	}
- 	#list > div:hover, button:hover, button:focus {
- 		opacity: .9;
- 		filter: alpha(opacity=90);
- 	}
- 	button > span {
- 		font-size: 28px;
- 		display: inline-block;
-  		vertical-align: middle;
-  		margin-right: 5px;
- 	}
- 	[name=add_task_field], [name=listName], [name=dueDate]  {
- 		display: inline-block;
- 		vertical-align: middle;
- 		margin-right: 7px;
- 		margin-bottom: 10px;
- 		height: 55px;
- 		line-height: 35px;
- 		border: none;
-		width: 30%;
-		padding: 0 10px;
-		font-family: 'Merriweather', serif;
- 	}
- 	[name=add_task_field]:focus, [name=listName]:focus, [name=dueDate]:focus {
- 		border: none;
-  		outline: none;
-  	}
-  	.green {
-  		background: rgb(167, 196, 81);
-  		border: outset 5px rgb(167, 196, 81);
-  	}
-  	.blue {
+}
+#list .completed {
+	background: #4fd1a1;
+	text-decoration: line-through;
+}
+#list .completed [type="text"] {
+	text-decoration: line-through;
+}
 
-  	}
-  	.btnGroup {
-  		display: inline-block;
- 		vertical-align: middle;
-  		width: 95%;
-  	}
-  	.csvTextarea {
-		display: block;
-		padding: 15px 20px;
-		margin-top: 10px;
-		font-size: 13px;
-		overflow: hidden;
-		width: 95%;
-		min-height: 200px;
-		box-sizing: border-box;
-		-moz-box-sizing: border-box;
-		border: none;
-		outline: none;
-		resize: vertical;
-  	}
-  	.hide {
-  		visibility:hidden;
-  		opacity:0;
-  		height: 0;
-  		
-  		-webkit-transition: all 200ms ease;
-	    -moz-transition: all 200ms ease;
-	    -o-transition: all 200ms ease;
-	    transition: all 200ms ease;
-  	}
-  	.sidebar {
-  		width: 25%;
-  		min-width: 300px;
-	    height: 100%;
-	    padding: 0px 0px 40px 0px;
-	    box-sizing: border-box;
-	    -moz-box-sizing: border-box;
-	    background-color: #D1CFC8;
-	    background-color: #454545;
-	    min-height: 200px;
-	    position: fixed;
-	    z-index: 999;
-	    right: 0;
-		-webkit-box-shadow: -4px 0px 3px 0px rgba(0,0,0,0.24);
-		-moz-box-shadow: -4px 0px 3px 0px rgba(0,0,0,0.24);
-		box-shadow: -4px 0px 3px 0px rgba(0,0,0,0.24);
-		direction: rtl;
-		overflow-y: scroll;
-  	}
-  	.sidebar:before {
-  		display: block;
-  		color: #fff;
-  		content: "Saved Lists";
-		font-size: 12px;
-		line-height: 1rem;
-		padding: 17px 11px;
-		letter-spacing: .5px;
-		color: #999;
-  	}
-  	.savedList {
-		display: table;
-		font-size: 13px;
-		line-height: 1rem;
-		padding: 8px 11px;
-		background-color: #bbb;
-		background-color: #454545;
-		color: #fff;
-		width: 100%;
-		color: #999;
-		box-sizing: border-box;
-		-moz-box-sizing: border-box;
-		word-break: break-all;
-		direction: ltr;
-		border-bottom: 1px solid rgb(83, 82, 82);
-  	}
-  	.savedList:hover, .savedList:focus {
-  		cursor: pointer;
-  		background-color: rgb(83, 82, 82);
-  		color: #fff;
-  	}
+#list .in-progress {
+	background: #53AACB;
+}
+#list .completed:after, #list .in-progress:after, #list div:after {
+	content: "completed";
+color: #fff;
+display: block;
+position: absolute;
+right: 35px;
+bottom: 10%;
+font-size: 14px;
+background-color: rgba(255,255,255,.2);
+padding: 2px 10px;
+width: 100px;
+text-align: center;
+}
+#list div:after {
+	content: "incomplete";
+}
+#list .in-progress:after {
+	content: "in progress";
+}
+button {
+	cursor: pointer;
+background: #999;
+border: none;
+padding: 0px 20px; 
+height: 55px;
+color: #fff;
+margin: 0 3px 0 0;
+font-family: sans-serif;
+font-size: 11px;
+margin-bottom: 10px;
+border: outset 5px #999;
+display: inline-block;
+	vertical-align: middle;
+	text-align: left;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
 
-  	.savedList > span:first-child {
-  		width: 80%;
-  		font-size: 11px;
-  	}
+button:focus {
+	outline: none;
+}
+#list > div:hover, button:hover, button:focus {
+	opacity: .9;
+	filter: alpha(opacity=90);
+}
+button > span {
+	font-size: 28px;
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 5px;
+}
+[name=add_task_field], [name=listName], [name=dueDate]  {
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 7px;
+	margin-bottom: 10px;
+	height: 55px;
+	line-height: 35px;
+	border: none;
+width: 30%;
+padding: 0 10px;
+font-family: 'Merriweather', serif;
+}
+[name=add_task_field]:focus, [name=listName]:focus, [name=dueDate]:focus {
+	border: none;
+	outline: none;
+}
+.green {
+	background: rgb(167, 196, 81);
+	border: outset 5px rgb(167, 196, 81);
+}
+.blue {
 
-  	.savedListDates, .savedList > span:first-child {
-  		display: table-cell;
-  	}
+}
+.btnGroup {
+	display: inline-block;
+	vertical-align: middle;
+	width: 95%;
+}
+.csvTextarea {
+display: block;
+padding: 15px 20px;
+margin-top: 10px;
+font-size: 13px;
+overflow: hidden;
+width: 95%;
+min-height: 200px;
+box-sizing: border-box;
+-moz-box-sizing: border-box;
+border: none;
+outline: none;
+resize: vertical;
+}
+.hide {
+	visibility:hidden;
+	opacity:0;
+	height: 0;
+	
+	-webkit-transition: all 200ms ease;
+  -moz-transition: all 200ms ease;
+  -o-transition: all 200ms ease;
+  transition: all 200ms ease;
+}
+.sidebar {
+	width: 25%;
+	min-width: 300px;
+  height: 100%;
+  padding: 0px 0px 40px 0px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  background-color: #D1CFC8;
+  background-color: #454545;
+  min-height: 200px;
+  position: fixed;
+  z-index: 999;
+  right: 0;
+-webkit-box-shadow: -4px 0px 3px 0px rgba(0,0,0,0.24);
+-moz-box-shadow: -4px 0px 3px 0px rgba(0,0,0,0.24);
+box-shadow: -4px 0px 3px 0px rgba(0,0,0,0.24);
+direction: rtl;
+overflow-y: scroll;
+}
+.sidebar:before {
+	display: block;
+	color: #fff;
+	content: "Saved Lists";
+font-size: 12px;
+line-height: 1rem;
+padding: 17px 11px;
+letter-spacing: .5px;
+color: #999;
+}
+.savedList {
+display: table;
+font-size: 13px;
+line-height: 1rem;
+padding: 8px 11px;
+background-color: #bbb;
+background-color: #454545;
+color: #fff;
+width: 100%;
+color: #999;
+box-sizing: border-box;
+-moz-box-sizing: border-box;
+word-break: break-all;
+direction: ltr;
+border-bottom: 1px solid rgb(83, 82, 82);
+}
+.savedList:hover, .savedList:focus {
+	cursor: pointer;
+	background-color: rgb(83, 82, 82);
+	color: #fff;
+}
 
-  	.savedListDates {
-  		font-size: 11px;
-  	}
+.savedList > span:first-child {
+	width: 80%;
+	font-size: 11px;
+}
 
-  	#list [data-indent=indentLeft] {
-  		margin-left: 20px;
-  	}
+.savedListDates, .savedList > span:first-child {
+	display: table-cell;
+}
 
-  	#list [data-indent=indentLeftLeft] {
-  		margin-left: 40px;
-  	}
+.savedListDates {
+	font-size: 11px;
+}
 
-  	#list [data-selected=true] {
-  		background-color: rgb(253, 128, 48);
-  	}
+#list [data-indent=indentLeft] {
+	margin-left: 20px;
+}
 
-  	#meta {
-  		width: 95%;
-  		margin-top: 40px;
-  		color: #999;
-  		font-size: 11px;
-  		font-weight: 700;
-  		overflow: hidden;
-  		letter-spacing: .5px;
-  	}
+#list [data-indent=indentLeftLeft] {
+	margin-left: 40px;
+}
 
-  	#meta span:first-child {
-  		float: left;
-  	}
+#list [data-selected=true] {
+	background-color: rgb(253, 128, 48);
+}
 
-  	#meta span + span {
-  		float: right;
-  		margin-right: 2px;
-  		cursor: pointer;
-  	}
-  	
-  	.radio {
-		background-color: #fff;
-		width: 20px;
-		height: 100%;
-		display: block;
-		position: absolute;
-		right: 0px;
-		top: 0px;
-		 box-sizing: border-box;
-		z-index: 100;
-		border-top: 6px solid rgb(236, 233, 223);
-		border-bottom: 6px solid rgb(236, 233, 223);
-  	}
-  	.radio:before {
-  		content: "";
-  		background: #ECE9DF;
-  		display: block;
-  		width: 8px;
-  		height: 100%;
-  		position: absolute;
-  		left: 0;
-  		top: 0;
+#meta {
+	width: 95%;
+	margin-top: 40px;
+	color: #999;
+	font-size: 11px;
+	font-weight: 700;
+	overflow: hidden;
+	letter-spacing: .5px;
+}
 
-  	}
+#meta span:first-child {
+	float: left;
+}
 
-  	[data-selected] .radio {
-  		background: rgb(254, 101, 4);
-  	}
+#meta span + span {
+	float: right;
+	margin-right: 2px;
+	cursor: pointer;
+}
 
-  	#mark-in-progress {
-  		background-color: #53AACB;
-  		border-color: #53AACB;
-  	}
+.radio {
+background-color: #fff;
+width: 20px;
+height: 100%;
+display: block;
+position: absolute;
+right: 0px;
+top: 0px;
+ box-sizing: border-box;
+z-index: 100;
+border-top: 6px solid rgb(236, 233, 223);
+border-bottom: 6px solid rgb(236, 233, 223);
+}
+.radio:before {
+	content: "";
+	background: #ECE9DF;
+	display: block;
+	width: 8px;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
 
-  	#mark-incomplete {
-  		background-color: #df4b48;
-  		border-color: #df4b48;
-  	}
+}
 
-  	#mark-completed {
-  		background-color: #4fd1a1;
-  		border-color: #4fd1a1;
-  	}
+[data-selected] .radio {
+	background: rgb(254, 101, 4);
+}
 
-   	#btmListControls {
-  		width: 95%;
-  		margin-bottom: 60px;
-  	}
+#mark-in-progress {
+	background-color: #53AACB;
+	border-color: #53AACB;
+}
 
-  	.statusBtns {
-  		float: right;
-  	}
-  	
-  	.indentBtns button, .statusBtns button {
-  		border-width: 3px;
-  		line-height: 20px;
-  		font-size: 11px;
-  		margin-bottom: 0;
-  		height: 35px;
-    	margin-top: 10px;
-  	}
-    .indentBtns button {
-      font-size: 20px;
-    }
+#mark-incomplete {
+	background-color: #df4b48;
+	border-color: #df4b48;
+}
 
-    #alphabetize {
-      font-size: 11px;
-    }
-  	.indentBtns span, .statusBtns span {
-  		display: block;
-  		color: #999;
-  		font-size: 11px;
-  		font-weight: 700;
-  		overflow: hidden;
-  		letter-spacing: .5px;
-  	}
-  	.statusBtns span {
-  		text-align: right;
-  	}
-  	.orange {
-  		color: rgb(254, 101, 4);
-  	}
+#mark-completed {
+	background-color: #4fd1a1;
+	border-color: #4fd1a1;
+}
+
+	#btmListControls {
+	width: 95%;
+	margin-bottom: 60px;
+}
+
+.statusBtns {
+	float: right;
+}
+
+.indentBtns button, .statusBtns button {
+	border-width: 3px;
+	line-height: 20px;
+	font-size: 11px;
+	margin-bottom: 0;
+	height: 35px;
+	margin-top: 10px;
+}
+.indentBtns button {
+  font-size: 20px;
+}
+
+#alphabetize {
+  font-size: 11px;
+}
+.indentBtns span, .statusBtns span {
+	display: block;
+	color: #999;
+	font-size: 11px;
+	font-weight: 700;
+	overflow: hidden;
+	letter-spacing: .5px;
+}
+.statusBtns span {
+	text-align: right;
+}
+.orange {
+	color: rgb(254, 101, 4);
+}
