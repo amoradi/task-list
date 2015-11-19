@@ -1,6 +1,19 @@
 // View module
 define(["./model", "./controller", "./addEventHandler"], function(model, controller, addEventHandler) {
 	return View = {
+		hideListMetaControls: function(hide) {
+			var controls = document.getElementById("btmListControls"),
+				meta     = document.getElementById("meta");
+			
+			if (hide) {
+				controls.setAttribute("class", "hide");
+				meta.setAttribute("class", "hide");
+			}
+			else {
+				controls.removeAttribute("class");
+				meta.removeAttribute("class");
+			}
+		},
 		resetCreateListForm: function() {
 			document.getElementById('createList').reset();
 		},
@@ -154,6 +167,8 @@ define(["./model", "./controller", "./addEventHandler"], function(model, control
 		    	console.log(num, this.value);
 		    	Controller.updateTask(num, this.value);
 			});
+			// hide controls and meta
+			View.hideListMetaControls(false);
 	 	},
 		updateTask: function(num, taskName) {
 			console.log

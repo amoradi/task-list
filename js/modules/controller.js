@@ -227,6 +227,9 @@ define(["./model", "./view", "./addEventHandler", "./task"], function(model, vie
 					    }
 					}
 				}
+				else {
+					View.hideListMetaControls(true);
+				}
 			}
 			else {
 				View.invalidDate();
@@ -366,14 +369,16 @@ define(["./model", "./view", "./addEventHandler", "./task"], function(model, vie
 				    }
 			    }
 
-			// remove unalphabetized list from View
+			// remove list from View
 			while (list.firstChild) {
 			   list.removeChild(list.firstChild);
 			}
-			// add alphabetized list to view
-			for (i=0, ii =nameArray.length; i < ii; i++) {
+			// add list to view
+			for (i = 0, ii = nameArray.length; i < ii; i++) {
 				this.addTask(nameArray[i], i+1);
 			}
+
+			if (nameArray.length === 0) View.hideListMetaControls(true);
 		},
 		writeCSV: function() {
 			View.writeCSV(Model.writeCSV());
