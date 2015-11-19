@@ -1,6 +1,9 @@
 // View module
 define(["./model", "./controller", "./addEventHandler"], function(model, controller, addEventHandler) {
 	return View = {
+		invalidDate: function() {
+			alert('Enter date - mm/dd/yyyy');
+		},
 		hideListMetaControls: function(hide) {
 			var controls = document.getElementById("btmListControls"),
 				meta     = document.getElementById("meta");

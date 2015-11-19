@@ -218,7 +218,7 @@ define(["./model", "./view", "./addEventHandler", "./task"], function(model, vie
 	 			}
 
 	 			this.counter = 0;
-				if (tasks) { // if from localStorage
+				if (tasks && Object.keys(tasks).length > 0) { // if from localStorage
 					for (var member in tasks) {
 						if (tasks.hasOwnProperty(member)) {
 					        Controller.counter = parseInt(member);
@@ -379,6 +379,7 @@ define(["./model", "./view", "./addEventHandler", "./task"], function(model, vie
 			}
 
 			if (nameArray.length === 0) View.hideListMetaControls(true);
+			View.checkSelectNumber();
 		},
 		writeCSV: function() {
 			View.writeCSV(Model.writeCSV());

@@ -10,6 +10,7 @@
   <style>
   	html {
        overflow-y: scroll;
+       min-width: 960px;
 	}
  	body {
  		text-align: left;
@@ -80,6 +81,18 @@
 	    -o-transition: all 200ms ease;
 	    transition: all 200ms ease;
  	}
+
+ 	#createList > * {
+ 		display: block;
+ 	}
+ 	#createList input {
+ 		width: 70%;
+ 	}
+
+ 	#createList button {
+ 		margin-top: 40px;
+ 	}
+
  	header {
  		width: 100%;
  		margin: 0;
@@ -189,16 +202,18 @@
 		background: #999;
 		border: none;
 		padding: 0px 20px; /*20px 0 10px;*/
-		line-height: 25px;
+		height: 55px;
 		color: #fff;
 		margin: 0 3px 0 0;
-		font-family: 'Merriweather', serif;
-		font-size: 13px;
+		font-family: sans-serif;
+		font-size: 11px;
 		margin-bottom: 10px;
 		border: outset 5px #999;
 		display: inline-block;
   		vertical-align: middle;
   		text-align: left;
+  		text-transform: uppercase;
+    	letter-spacing: 1px;
  	}
  	/*#list ~ button {
  		margin-bottom: 10px;
@@ -221,6 +236,7 @@
  		vertical-align: middle;
  		margin-right: 7px;
  		margin-bottom: 10px;
+ 		height: 55px;
  		line-height: 35px;
  		border: none;
 		width: 30%;
@@ -414,6 +430,8 @@
 		line-height: 20px;
 		font-size: 11px;
 		margin-bottom: 0;
+		height: 35px;
+    	margin-top: 10px;
   	}
   	.indentBtns span, .statusBtns span {
   		display: block;
@@ -470,7 +488,7 @@
 				<button data-indent="left" title="Left Indent">&rsaquo;</button><button class="alphaIndentBtns" data-indent="right" title="Right Indent">&lsaquo;</button><button id="alphabetize" name="alphabetize">Alphabetize</button>
 			</div>
 		</div>
-			<button id="saveList" class="green">Save List</button><button id="removeList" class="">Delete List</button><button class="green" id="createNewList">Create New List</button><!-- // -->
+			<button id="saveList" class="green">Save List</button><button class="green" id="createNewList">Create New List</button><button id="removeList" class="">Delete List</button><!-- // -->
 	</form>
 	<div class="sidebar"></div>
 	<!-- <script src="script.js"></script> -->
