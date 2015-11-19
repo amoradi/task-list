@@ -1,0 +1,56 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>TaskMaster</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link href='http://fonts.googleapis.com/css?family=Merriweather:300,400,900,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+	<header>
+		<h1><span class="checkLogo">&#x02713;</span>&nbsp;Task<span>Master<span></h1>
+	</header>
+	<form id="createList">
+		<h1>Create a New List<span>Go ahead, have at it.</span></h1>
+		<input type="text" name="listName" autofocus required placeholder="Enter List Name">
+		<input type="text" name="dueDate" autofocus  placeholder="07/25/2015">
+		<button type="submit" id="addList" class="green">Create List</button>
+	</form>   
+	<form id="input" class="hide">
+		
+		<h1 id="listName">Vaction Checklist <span>Due August 25, 2016</span></h1>
+		
+		<div class="btnGroup"><input type="text" name="add_task_field" autofocus required placeholder="Enter Task"><button type="submit" id="addTask" class="green">Add Task</button><button id="removeTask">Remove Task(s)</button><button id="removeBtn" name="remove">Remove Completed Task(s)</button>
+			
+
+		</div>
+
+		<div id="meta"><span>&check; Completed/Incomplete</span><span id="select">Select &xvee;</span></div>
+		<div id="list" ondragover="allowDrop(event)" ondrop="drop(event)">
+			
+		</div>
+		<div id="btmListControls">
+			<div class="statusBtns">
+				
+				<button id="mark-incomplete">incomplete</button>
+				<button id="mark-in-progress">in progress</button>
+				<button id="mark-completed">completed</button>
+			</div>
+			<div class="indentBtns">
+				
+				<button data-indent="right" title="Left Indent">&larrb;</button><button class="alphaIndentBtns" data-indent="left" title="Right Indent">&rarrb;</button><button id="alphabetize" name="alphabetize">Alphabetize</button>
+			</div>
+		</div>
+			<button id="saveList" class="green">Save List</button><button class="green" id="createNewList">Create New List</button><button id="removeList" class="">Delete List</button>
+	</form>
+	<div class="sidebar"></div>
+	<script data-main="app" src="lib/require.js"></script>
+</body>
+</html>
