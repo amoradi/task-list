@@ -389,6 +389,9 @@ var Controller = {
 				    }
 				}
 			}
+			else {
+				View.hideListMetaControls(true);
+			}
 		}
 		else {
 			View.invalidDate();
@@ -544,6 +547,19 @@ var Controller = {
 
 // View
 var View = {
+	hideListMetaControls: function(hide) {
+		var controls = document.getElementById("btmListControls"),
+			meta     = document.getElementById("meta");
+		
+		if (hide) {
+			controls.setAttribute("class", "hide");
+			meta.setAttribute("class", "hide");
+		}
+		else {
+			controls.removeAttribute("class");
+			meta.removeAttribute("class");
+		}
+	},
 	resetCreateListForm: function() {
 		document.getElementById('createList').reset();
 	},
@@ -697,6 +713,9 @@ var View = {
 	    	console.log(num, this.value);
 	    	Controller.updateTask(num, this.value);
 		});
+
+		// hide controls and meta
+		View.hideListMetaControls(false);
  	},
 	updateTask: function(num, taskName) {
 		console.log
