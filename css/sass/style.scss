@@ -1,0 +1,471 @@
+// minify/uglify js, minify css
+@import 'variables';
+
+html {
+   overflow-y: scroll;
+   min-width: 960px;
+}
+
+body {
+	text-align: left;
+	font-size: 62.5%;
+	color: #111;
+	background: $bkgr;
+	font-family: $body-font;
+	padding: 0;
+	margin: 0;
+	padding-bottom: 100px;
+	overflow: hidden;
+	min-width: 1080px;
+}
+
+header h1 {
+	color: $off-button-color;
+	letter-spacing: 1px;
+	font-size: 15px;
+}
+
+.checkLogo {
+	display: none;
+	padding: 2px 7px;
+	background-color: #fff;
+	font-size: 14px;
+	position: relative;
+	top: -3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	letter-spacing: 0px;
+}
+
+form {
+	visibility: visible;
+	opacity: 1;
+	@include transition($time, $transition);
+}
+
+#listName, #createList h1 {
+	font-size: 2.4rem;
+	margin-top: 0;
+	padding-left: 4px;
+	margin-top: 0;
+	margin-bottom: 45px;
+	width: 95%;
+	font-weight: 900;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+
+	span {
+		font-weight: 300;
+		display: block;
+		font-size: 14px;
+		padding-top: 4px;
+	}
+}
+
+#input, header, #createList {
+	width: 70%;
+	margin: 0 0 0 4%;
+	float: left;
+	@include transition($time, $transition);
+}
+
+#createList {
+	> * {
+		display: block;
+	}
+
+	input {
+		width: 70%;
+	}
+
+	button {
+		margin-top: 40px;
+	}
+}
+
+header {
+	width: 100%;
+	margin: 0;
+	padding: 5px 20px 5px 4%;
+	background: #fff;
+	margin-bottom: 45px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+
+#list {
+	width: 95%;
+	margin: 5px 0;
+	overflow: hidden;
+	counter-reset: section;
+
+	div {
+		cursor: pointer;
+		overflow-y: auto;
+		text-align: left;
+		margin: 3px 0;
+		line-height: 30px;
+		padding: 1px 140px 1px 15px;
+		font-size: 1.4rem;
+		color: #fff;
+		position: relative;
+		background: $incomplete-color;
+		counter-increment: section;
+	}
+
+	div:before {
+		content: counter(section);
+		position: absolute;
+		right: 165px;
+		z-index: 99;
+		font-size: 12px;
+		color: #fff;
+		top: 6px;
+		opacity: .5;
+		text-align: right;
+	}
+
+	[type=checkbox] {
+		margin: 0 10px 0 0;
+		height: 40px;
+		width: 30px;
+		display: inline-block;
+		vertical-align: middle;
+		opacity: .3;
+		filter: alpha(opacity=30);
+	}
+
+	label {
+		cursor: pointer;
+		word-wrap: break-word;
+	}
+
+	input[type=text] {
+		color: #fff;
+		background-color: transparent;
+		border: none;
+		width: 88%;
+		padding-left: 4px;
+		position: relative;
+		top: 1px;
+		font-size: 1.1rem;
+		font-family: $body-font;
+	}
+
+	input[type=text]:focus {
+		border: none;
+		outline: none;
+	}
+
+	.completed {
+		background: $completed-color;
+		text-decoration: line-through;
+
+		[type="text"] {
+			text-decoration: line-through;
+		}
+	}
+
+	.in-progress {
+		background: $in-progress-color;
+	}
+
+	.completed:after, .in-progress:after, div:after {
+		content: "completed";
+		color: #fff;
+		display: block;
+		position: absolute;
+		right: 35px;
+		bottom: 10%;
+		font-size: 14px;
+		background-color: rgba(255,255,255,.2);
+		padding: 2px 10px;
+		width: 100px;
+		text-align: center;
+	}
+
+	div:after {
+		content: "incomplete";
+	}
+
+	.in-progress:after {
+		content: "in progress";
+	}
+}
+
+button {
+	cursor: pointer;
+	background: $off-button-color;
+	border: none;
+	padding: 0px 20px; 
+	height: 55px;
+	color: #fff;
+	margin: 0 3px 0 0;
+	font-family: sans-serif;
+	font-size: 11px;
+	margin-bottom: 10px;
+	border: outset 5px $off-button-color;
+	display: inline-block;
+	vertical-align: middle;
+	text-align: left;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+
+	&:focus {
+		outline: none;
+	}
+
+	> span {
+		font-size: 28px;
+		display: inline-block;
+		vertical-align: middle;
+		margin-right: 5px;
+	}
+}
+
+#list > div:hover, button:hover, button:focus {
+	opacity: .9;
+	filter: alpha(opacity=90);
+}
+
+
+[name=add_task_field], [name=listName], [name=dueDate]  {
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 7px;
+	margin-bottom: 10px;
+	height: 55px;
+	line-height: 35px;
+	border: none;
+	width: 30%;
+	padding: 0 10px;
+	font-family: $body-font;
+
+	:focus {
+		border: none;
+		outline: none;
+	}
+}
+
+.green {
+	background: $button-color;
+	border: outset 5px $button-color;
+}
+
+.btnGroup {
+	display: inline-block;
+	vertical-align: middle;
+	width: 95%;
+}
+
+.csvTextarea {
+	display: block;
+	padding: 15px 20px;
+	margin-top: 10px;
+	font-size: 13px;
+	overflow: hidden;
+	width: 95%;
+	min-height: 200px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	border: none;
+	outline: none;
+	resize: vertical;
+}
+
+.hide {
+	visibility:hidden;
+	opacity:0;
+	height: 0;
+	@include transition($time, $transition);
+}
+
+.sidebar {
+	width: 25%;
+	min-width: 300px;
+	height: 100%;
+	padding: 0px 0px 40px 0px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	background-color: #D1CFC8;
+	background-color: #454545;
+	min-height: 200px;
+	position: fixed;
+	z-index: 999;
+	right: 0;
+	-webkit-box-shadow: -4px 0px 3px 0px rgba(0,0,0,0.24);
+	-moz-box-shadow: -4px 0px 3px 0px rgba(0,0,0,0.24);
+	box-shadow: -4px 0px 3px 0px rgba(0,0,0,0.24);
+	direction: rtl;
+	overflow-y: scroll;
+
+	&:before {
+		display: block;
+		color: #fff;
+		content: "Saved Lists";
+		font-size: 12px;
+		line-height: 1rem;
+		padding: 17px 11px;
+		letter-spacing: .5px;
+		color: $off-button-color;
+	}
+}
+
+.savedList {
+	display: table;
+	font-size: 13px;
+	line-height: 1rem;
+	padding: 8px 11px;
+	background-color: #bbb;
+	background-color: #454545;
+	color: #fff;
+	width: 100%;
+	color: $off-button-color;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	word-break: break-all;
+	direction: ltr;
+	border-bottom: 1px solid rgb(83, 82, 82);
+
+	&:hover, &:focus {
+		cursor: pointer;
+		background-color: rgb(83, 82, 82);
+		color: #fff;
+	}
+
+	> span:first-child {
+		width: 80%;
+		font-size: 11px;
+	}
+}
+
+.savedListDates, .savedList > span:first-child {
+	display: table-cell;
+}
+
+.savedListDates {
+	font-size: 11px;
+}
+
+#list {
+
+	[data-indent=indentLeftLeft] {
+		margin-left: 40px;
+	}
+
+	[data-indent=indentLeft] {
+		margin-left: 20px;
+	}
+
+	[data-selected=true] {
+		background-color: $selected-color;
+	}
+}
+
+#meta {
+	width: 95%;
+	margin-top: 40px;
+	color: $off-button-color;
+	font-size: 11px;
+	font-weight: 700;
+	overflow: hidden;
+	letter-spacing: .5px;
+
+	span:first-child {
+		float: left;
+	}
+
+	span + span {
+		float: right;
+		margin-right: 2px;
+		cursor: pointer;
+	}
+}
+
+.radio {
+	background-color: #fff;
+	width: 20px;
+	height: 100%;
+	display: block;
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	box-sizing: border-box;
+	z-index: 100;
+	border-top: 6px solid rgb(236, 233, 223);
+	border-bottom: 6px solid rgb(236, 233, 223);
+	
+	&:before {
+		content: "";
+		background: $bkgr;
+		display: block;
+		width: 8px;
+		height: 100%;
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+}
+
+[data-selected] .radio {
+	background: rgb(254, 101, 4);
+}
+
+#mark-in-progress {
+	background-color: $in-progress-color;
+	border-color: $in-progress-color;
+}
+
+#mark-incomplete {
+	background-color: $incomplete-color;
+	border-color: $incomplete-color;
+}
+
+#mark-completed {
+	background-color: $completed-color;
+	border-color: $completed-color;
+}
+
+#btmListControls {
+	width: 95%;
+	margin-bottom: 60px;
+}
+
+.statusBtns {
+	float: right;
+}
+
+.indentBtns button, .statusBtns button {
+	border-width: 3px;
+	line-height: 20px;
+	font-size: 11px;
+	margin-bottom: 0;
+	height: 35px;
+	margin-top: 10px;
+}
+
+.indentBtns button {
+  	font-size: 20px;
+}
+
+#alphabetize {
+  	font-size: 11px;
+}
+
+.indentBtns span, .statusBtns span {
+	display: block;
+	color: $off-button-color;
+	font-size: 11px;
+	font-weight: 700;
+	overflow: hidden;
+	letter-spacing: .5px;
+}
+
+.statusBtns span {
+	text-align: right;
+}
+
+.orange {
+	color: rgb(254, 101, 4);
+}

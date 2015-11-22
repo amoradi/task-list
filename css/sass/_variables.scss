@@ -1,0 +1,24 @@
+// variables
+
+$time: 200;
+$transition: ease;
+
+// font
+$body-font: 'Merriweather', serif;
+
+// colors
+$bkgr: #ECE9DF;
+$button-color: rgb(167, 196, 81);
+$off-button-color: #999;
+$incomplete-color: #df4b48;
+$completed-color: #4fd1a1;
+$in-progress-color: #53AACB;
+$selected-color: rgb(253, 128, 48);
+
+// mixins
+@mixin transition($time, $transition) {
+	-webkit-transition: all $time $transition;
+	-moz-transition: all $time $transition;
+	-o-transition: all $time $transition;
+	transition: all $time $transition;
+}
