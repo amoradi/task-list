@@ -185,7 +185,7 @@ define(["./model", "./view", "./addEventHandler", "./task"], function(model, vie
 		},
 		validateDate: function(year, month, day) {
 		    var d = new Date(year, month, day);
-		    if (d.getFullYear() == year && d.getMonth() == month && d.getDate() == day) {
+		    if (d.getFullYear() - 1 == year && d.getMonth() == month && d.getDate() == day) {
 		        return true;
 		    }
 		    return false;
