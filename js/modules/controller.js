@@ -179,13 +179,13 @@ define(["./model", "./view", "./addEventHandler", "./task"], function(model, vie
 			    m 			= d.getMonth() + 1,
 			    day 		= d.getDate(),
 			    year 		= d.getFullYear(),
-				dateString 	= m + "/" + day + "/" + year;
+			    dateString 	= m + "/" + day + "/" + year;
 
-				document.getElementsByName("dueDate")[0].placeholder = dateString;
+			document.getElementsByName("dueDate")[0].placeholder = dateString;
 		},
 		validateDate: function(year, month, day) {
-		    var d = new Date(year, month, day);
-		    if (d.getFullYear() == year && d.getMonth() == month && d.getDate() == day) {
+		    var d = new Date(year, month - 1, day);
+		    if (d.getFullYear() == year && d.getMonth() == month - 1 && d.getDate() == day) {
 		        return true;
 		    }
 		    return false;
